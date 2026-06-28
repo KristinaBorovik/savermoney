@@ -796,7 +796,7 @@ function renderPetFund(){
       <span class="pf-emoji">${pf.emoji||'🐾'}</span>
       <div class="pf-name">${esc(pf.name)}</div>
       <div class="pf-cycle">Цикл: каждые ${pf.cycleDays} дн. · ${fmt(pf.monthlyAmount)}/мес</div>
-      <div class="pf-status-badge ${status.cls}"><i class="fa-solid ${status.cls==='ok'||status.cls==='accumulating'?'fa-clock':'status.cls==='soon'?fa-triangle-exclamation':'fa-circle-exclamation'}"></i>${status.label}</div>
+      <div class="pf-status-badge ${status.cls}"><i class="fa-solid ${status.cls==='ok'||status.cls==='accumulating' ? 'fa-clock' : status.cls==='soon' ? 'fa-triangle-exclamation' : 'fa-circle-exclamation'}"></i>${status.label}</div>
       <div class="pf-amounts">
         <span class="pf-saved" style="color:${col}">${fmt(saved)}</span>
         ${cost>0?`<span class="pf-of">/ ${fmt(cost)}</span>`:'<span class="pf-of">накоплено</span>'}
