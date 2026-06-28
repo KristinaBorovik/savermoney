@@ -322,6 +322,10 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
     <div id="tab-overview" class="tab-page active">
       <div class="kpi-grid" id="kpi-row"></div>
       <div class="pay-strip" id="ov-planned-strip" style="display:none"></div>
+      <div class="card" id="ov-savings-card" style="display:none">
+        <div class="card-header"><span class="card-title">Копилки</span></div>
+        <div id="ov-savings-summary"></div>
+      </div>
       <div class="summary-box" id="summary-box"></div>
       <div class="card">
         <div class="card-header"><span class="card-title">Расходы по неделям</span></div>
@@ -614,7 +618,17 @@ function planKey(id){return`${id}_${curYear}_${String(curMonth+1).padStart(2,'0'
 function isPaid(id){return!!((S.plannedPaid||{})[planKey(id)]);}
 function togglePaid(id){
   if(!S.plannedPaid)S.plannedPaid={};
-  const k=planKey(id);S.plannedPaid[k]=!S.plannedPaid[k];
+  const k=planKey(id);
+  const wasPaid=!!S.plannedPaid[k];
+  S.plannedPaid[k]=!wasPaid;
+  const plan=(S.plannedExpenses||[]).find(p=>p.id===id);
+  if(plan&&plan.savingId){
+    const sv=(S.savings||[]).find(s=>s.id===plan.savingId);
+    if(sv){
+      if(!wasPaid)sv.current=Math.min(sv.goal,(sv.current||0)+(plan.amount||0));
+      else sv.current=Math.max(0,(sv.current||0)-(plan.amount||0));
+    }
+  }
   save();renderTab(currentTab);
   if(currentTab!=='overview')renderOverviewStrip();
 }
@@ -623,7 +637,12 @@ function togglePaid(id){
 function applyMonthlyContributions(){
   const key=`contrib_${curYear}_${String(curMonth+1).padStart(2,'0')}`;
   if(S[key])return;
-  (S.savings||[]).forEach(sv=>{if(sv.monthlyAmount&&sv.monthlyAmount>0)sv.current=Math.min(sv.goal,sv.current+(sv.monthlyAmount||0));});
+  (S.savings||[]).forEach(sv=>{
+    if(!sv.monthlyAmount||sv.monthlyAmount<=0)return;
+    const linked=(S.plannedExpenses||[]).some(p=>p.savingId===sv.id);
+    if(linked)return;
+    sv.current=Math.min(sv.goal,sv.current+(sv.monthlyAmount||0));
+  });
   S[key]=true;save();
 }
 
@@ -649,6 +668,38 @@ function renderOverviewStrip(){
     <div class="pay-strip-footer"><span>${unpaid.length} из ${plans.length} не оплачено</span><strong>${fmt(totalUnpaid)} осталось</strong></div>`;
 }
 
+function renderOverviewSavings(){
+  const card=document.getElementById('ov-savings-card');
+  const wrap=document.getElementById('ov-savings-summary');
+  if(!card||!wrap)return;
+  const list=S.savings||[];
+  if(!list.length){card.style.display='none';return;}
+  card.style.display='';
+  const totalCur=list.reduce((s,sv)=>s+(sv.current||0),0);
+  const totalGoal=list.reduce((s,sv)=>s+(sv.goal||0),0);
+  const pct=totalGoal>0?Math.min(100,Math.round((totalCur/totalGoal)*100)):0;
+  const rows=list.map((sv,i)=>{
+    const p=sv.goal>0?Math.min(100,Math.round((sv.current/sv.goal)*100)):0;
+    const col=sv.color||PIGGY_COLORS[i%PIGGY_COLORS.length];
+    const linkedPlan=(S.plannedExpenses||[]).find(pl=>pl.savingId===sv.id);
+    const planTag=linkedPlan?`<span class="monthly-badge" style="margin-left:6px"><i class="fa-solid fa-rotate"></i>${isPaid(linkedPlan.id)?'оплачено':'не оплачено'}</span>`:'';
+    return`<div style="margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;margin-bottom:4px">
+        <span style="font-weight:600;color:var(--text)">${esc(sv.name)}${planTag}</span>
+        <span style="color:var(--text3)">${fmt(sv.current)} / ${fmt(sv.goal)}</span>
+      </div>
+      <div class="prog-bar"><div class="prog-fill" style="width:${p}%;background:${col}"></div></div>
+    </div>`;
+  }).join('');
+  wrap.innerHTML=`
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px">
+      <span style="font-size:22px;font-weight:700;color:var(--text)">${fmt(totalCur)}</span>
+      <span style="font-size:12px;color:var(--text3)">из ${fmt(totalGoal)} (${pct}%)</span>
+    </div>
+    <div class="prog-bar" style="height:9px;margin-bottom:16px"><div class="prog-fill" style="width:${pct}%;background:var(--accent)"></div></div>
+    ${rows}`;
+}
+
 function renderOverview(){
   const inc=S.incomes.filter(i=>inMonth(i.date));
   const exp=S.expenses.filter(e=>inMonth(e.date));
@@ -671,6 +722,7 @@ function renderOverview(){
     <div class="kpi-card ${balance>=0?'c-blue':'c-red'}"><div class="kpi-label">Свободно</div><div class="kpi-val">${fmt(balance)}</div><div class="kpi-sub">${balance>=0?'После всех платежей':'Перерасход'}</div></div>`;
 
   renderOverviewStrip();
+  renderOverviewSavings();
 
   document.getElementById('summary-box').innerHTML=`
     <div class="summary-box-title"><i class="fa-solid fa-chart-bar"></i> Итоги ${MONTHS[curMonth]}</div>
@@ -757,9 +809,10 @@ function renderPlanned(){
   if(!plans.length){document.getElementById('planned-grid').innerHTML=`<div style="grid-column:1/-1">${emptyState('fa-calendar-check','Нет плановых расходов — добавьте аренду, коммуналку, страховку...')}</div>`;return;}
   document.getElementById('planned-grid').innerHTML=plans.map(p=>{
     const pd=isPaid(p.id);
+    const piggyTag=p.savingId?'<span class="monthly-badge" style="margin-left:6px"><i class="fa-solid fa-piggy-bank"></i> копилка</span>':'';
     return`<div class="plan-card ${pd?'paid':'unpaid'}">
       <div class="plan-card-top">
-        <div><div class="plan-card-name">${esc(p.name)}</div><div class="plan-card-meta">${p.dueDay?p.dueDay+'-е число · ':''}${PAY_LABEL[p.pay]||''}</div></div>
+        <div><div class="plan-card-name">${esc(p.name)}${piggyTag}</div><div class="plan-card-meta">${p.dueDay?p.dueDay+'-е число · ':''}${PAY_LABEL[p.pay]||''}</div></div>
         <button class="paid-check-btn ${pd?'paid':'unpaid'}" onclick="togglePaid(${p.id})"><i class="fa-solid ${pd?'fa-check':'fa-xmark'}"></i></button>
       </div>
       <div class="plan-card-amount" style="color:${p.color||'var(--accent)'}">${fmt(p.amount)}</div>
@@ -856,7 +909,19 @@ function updateBalTotal(){const b=S.balances||{};document.getElementById('bal-to
 function setPFilter(btn,val,cid){document.querySelectorAll('#'+cid+' .ptab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
 
 // ── DELETE ──
-function del(list,id){S[list]=(S[list]||[]).filter(item=>item.id!==id);save();renderTab(currentTab);toast('Удалено');}
+function del(list,id){
+  if(list==='savings'){
+    const linkedPlan=(S.plannedExpenses||[]).find(p=>p.savingId===id);
+    if(linkedPlan){
+      S.plannedExpenses=S.plannedExpenses.filter(p=>p.id!==linkedPlan.id);
+      if(S.plannedPaid){
+        Object.keys(S.plannedPaid).forEach(k=>{if(k.startsWith(linkedPlan.id+'_'))delete S.plannedPaid[k];});
+      }
+    }
+  }
+  S[list]=(S[list]||[]).filter(item=>item.id!==id);
+  save();renderTab(currentTab);toast('Удалено');
+}
 
 // ── FORMS ──
 const PAY_OPTS=`<option value="card">Карта</option><option value="cash">Наличные</option><option value="crypto">Крипта</option>`;
@@ -894,7 +959,17 @@ function confirmModal(){
   else if(activeModal==='reminder'){if(!gv('m-name')||!gv('m-amount')||!gv('m-day')){shake();return;}S.reminders.push({id,name:gv('m-name'),amount:+gv('m-amount'),day:+gv('m-day'),pay:gv('m-pay'),color:REMINDER_COLORS[S.reminders.length%REMINDER_COLORS.length]});}
   else if(activeModal==='grocery'){if(!gv('m-name')){shake();return;}S.grocery.push({id,name:gv('m-name'),qty:gv('m-qty'),price:parseFloat(gv('m-price'))||0,done:false,person:gv('m-person')});}
   else if(activeModal==='receipt'){if(!gv('m-store')||!gv('m-amount')||+gv('m-amount')<=0){shake();return;}S.receipts.unshift({id,store:gv('m-store'),amount:+gv('m-amount'),pay:gv('m-pay'),date:gv('m-date'),comment:gv('m-comment')});}
-  else if(activeModal==='saving'){if(!gv('m-name')||!gv('m-goal')||+gv('m-goal')<=0){shake();return;}const ma=monthlyModeOn?(parseFloat(gv('m-monthly'))||0):0;S.savings.push({id,name:gv('m-name'),goal:+gv('m-goal'),current:parseFloat(gv('m-current'))||0,monthlyAmount:ma,color:PIGGY_COLORS[S.savings.length%PIGGY_COLORS.length]});}
+  else if(activeModal==='saving'){
+    if(!gv('m-name')||!gv('m-goal')||+gv('m-goal')<=0){shake();return;}
+    const ma=monthlyModeOn?(parseFloat(gv('m-monthly'))||0):0;
+    const col=PIGGY_COLORS[S.savings.length%PIGGY_COLORS.length];
+    S.savings.push({id,name:gv('m-name'),goal:+gv('m-goal'),current:parseFloat(gv('m-current'))||0,monthlyAmount:ma,color:col});
+    if(ma>0){
+      const planId=nextId();
+      S.plannedExpenses=S.plannedExpenses||[];
+      S.plannedExpenses.push({id:planId,name:'Копилка: '+gv('m-name'),amount:ma,dueDay:null,pay:'card',comment:'Авто-взнос в копилку',color:col,savingId:id});
+    }
+  }
   save();closeModal();renderTab(currentTab);toast('Сохранено ☁️');
 }
 
