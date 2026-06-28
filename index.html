@@ -180,15 +180,11 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 .reminder-soon{background:#fde8e8;color:var(--red)}
 .reminder-ok{background:var(--surface3);color:var(--text3)}
 .reminder-today{background:#fff3cd;color:#8a6200}
-
-/* sync indicator */
 .sync-dot{width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block;margin-right:4px;transition:background .3s}
 .sync-dot.syncing{background:var(--amber);animation:pulse 1s infinite}
 .sync-dot.error{background:var(--red)}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 .sync-label{font-size:11px;color:var(--text3);display:flex;align-items:center;gap:4px}
-
-/* planned */
 .planned-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;margin-bottom:16px}
 .plan-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-lg);padding:14px 16px;position:relative;overflow:hidden;transition:all .15s}
 .plan-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--r-lg) var(--r-lg) 0 0}
@@ -227,13 +223,56 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 .paid-check-btn.paid{background:var(--green-bg);color:var(--green)}
 .paid-check-btn.unpaid{background:var(--red-bg);color:var(--red)}
 .paid-check-btn:hover{transform:scale(1.1)}
-
-/* loading overlay */
 .loading-overlay{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;gap:16px;transition:opacity .4s}
 .loading-overlay.hidden{opacity:0;pointer-events:none}
 .loading-spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 1s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .loading-text{font-size:14px;color:var(--text3);font-weight:500}
+
+/* ── PET FUND ── */
+.pet-fund-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;margin-bottom:20px}
+.pf-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r-xl);padding:18px;position:relative;overflow:hidden;box-shadow:var(--shadow)}
+.pf-card-accent{position:absolute;top:0;left:0;right:0;height:4px;border-radius:var(--r-xl) var(--r-xl) 0 0}
+.pf-emoji{font-size:28px;margin-bottom:8px;margin-top:2px;display:block;line-height:1}
+.pf-name{font-size:14px;font-weight:700;color:var(--text);margin-bottom:2px}
+.pf-cycle{font-size:11px;color:var(--text3);margin-bottom:12px}
+.pf-amounts{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px}
+.pf-saved{font-size:20px;font-weight:700;letter-spacing:-.5px}
+.pf-of{font-size:11px;color:var(--text3)}
+.pf-prog{height:8px;background:var(--surface3);border-radius:4px;overflow:hidden;margin:6px 0 10px}
+.pf-fill{height:100%;border-radius:4px;transition:width .6s cubic-bezier(.4,0,.2,1)}
+.pf-meta{display:flex;justify-content:space-between;font-size:11px;color:var(--text3);margin-bottom:14px;flex-wrap:wrap;gap:4px}
+.pf-meta-item{display:flex;align-items:center;gap:4px}
+.pf-meta-item i{font-size:10px;opacity:.7}
+.pf-actions{display:flex;gap:8px}
+.pf-buy-btn{flex:1;padding:9px 0;border-radius:var(--r-md);border:none;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:6px}
+.pf-buy-btn.ready{background:var(--green);color:#fff;box-shadow:0 2px 8px rgba(30,128,64,.25)}
+.pf-buy-btn.ready:hover{background:#166830}
+.pf-buy-btn.not-ready{background:var(--surface2);color:var(--text3);border:1px solid var(--border2);cursor:default}
+.pf-edit-btn{width:36px;height:36px;display:flex;align-items:center;justify-content:center;border:1px solid var(--border2);border-radius:var(--r-md);background:none;cursor:pointer;color:var(--text3);font-size:13px;transition:all .12s}
+.pf-edit-btn:hover{background:var(--accent-bg);border-color:var(--accent);color:var(--accent-dark)}
+.pf-del-btn{width:36px;height:36px;display:flex;align-items:center;justify-content:center;border:1px solid #f0c0c0;border-radius:var(--r-md);background:none;cursor:pointer;color:var(--red);font-size:12px;transition:all .12s}
+.pf-del-btn:hover{background:var(--red-bg)}
+.pf-status-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:10px;font-weight:700;margin-bottom:10px}
+.pf-status-badge.ok{background:var(--green-bg);color:var(--green)}
+.pf-status-badge.soon{background:#fff3cd;color:#8a6200}
+.pf-status-badge.overdue{background:var(--red-bg);color:var(--red)}
+.pf-status-badge.accumulating{background:var(--accent-bg);color:var(--accent-dark)}
+.pf-monthly-chip{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;background:var(--amber-bg);color:var(--amber);border:1px solid #f0d9a0}
+.pf-history-item{display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--surface2);border-radius:var(--r-md);border:1px solid transparent}
+.pf-history-item:hover{border-color:var(--border)}
+.pf-add-card{background:var(--surface2);border:2px dashed var(--border2);border-radius:var(--r-xl);padding:24px 18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;transition:all .15s;min-height:120px}
+.pf-add-card:hover{border-color:var(--accent);background:var(--accent-bg)}
+.pf-add-card i{font-size:24px;color:var(--border2)}
+.pf-add-card:hover i{color:var(--accent)}
+.pf-add-card span{font-size:12px;font-weight:600;color:var(--text3)}
+.pf-add-card:hover span{color:var(--accent-dark)}
+.pf-section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.pf-section-title{font-size:13px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:8px}
+.pf-total-strip{background:linear-gradient(135deg,#1c1b19 0%,#2d2b28 100%);border-radius:var(--r-lg);padding:16px 20px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.pf-total-label{font-size:11px;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
+.pf-total-val{font-size:22px;font-weight:700;color:#fff;letter-spacing:-.5px}
+.pf-total-sub{font-size:11px;color:rgba(255,255,255,.4)}
 
 @media(max-width:680px){
   .sidebar{width:100%;height:auto;position:sticky;top:0;flex-direction:row;overflow-x:auto;border-right:none;border-bottom:1px solid var(--border)}
@@ -251,6 +290,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
   .balance-grid{grid-template-columns:1fr 1fr}
   .content{padding:16px}
   .planned-grid{grid-template-columns:1fr}
+  .pet-fund-grid{grid-template-columns:1fr}
 }
 @media(max-width:420px){
   .kpi-grid{grid-template-columns:1fr}
@@ -260,7 +300,6 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 </head>
 <body>
 
-<!-- Loading overlay -->
 <div class="loading-overlay" id="loading-overlay">
   <div class="loading-spinner"></div>
   <div class="loading-text">Загрузка данных...</div>
@@ -289,7 +328,6 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
     <div class="sb-section-label">Списки</div>
     <button class="sb-btn" onclick="showTab('grocery',this)"><i class="fa-solid fa-cart-shopping"></i><span>Продукты</span></button>
     <button class="sb-btn" onclick="showTab('receipts',this)"><i class="fa-solid fa-file-invoice-dollar"></i><span>Чеки</span></button>
-    <button class="sb-btn" onclick="showTab('purchases',this)"><i class="fa-solid fa-cart-shopping"></i><span>Покупки</span></button>
     <button class="sb-btn" onclick="showTab('savings',this)"><i class="fa-solid fa-piggy-bank"></i><span>Копилки</span></button>
   </nav>
   <div class="sb-month">
@@ -381,8 +419,22 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 
     <!-- ANIMALS -->
     <div id="tab-animals" class="tab-page">
+      <!-- Pet Fund Section -->
       <div class="card">
-        <div class="card-header"><span class="card-title">Животные — общие расходы</span></div>
+        <div class="card-header">
+          <div>
+            <span class="card-title">🐾 Фонд животных</span>
+            <div class="card-sub">Копим заранее — тратим спокойно</div>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="openModal('petfund')"><i class="fa-solid fa-plus"></i> Добавить статью</button>
+        </div>
+        <div id="pf-total-strip"></div>
+        <div class="pet-fund-grid" id="pet-fund-grid"></div>
+      </div>
+
+      <!-- Regular animal expenses -->
+      <div class="card">
+        <div class="card-header"><span class="card-title">Расходы за месяц</span></div>
         <div id="animal-summary"></div>
         <hr class="section-divider">
         <div class="card-title" style="margin-bottom:12px">История</div>
@@ -420,14 +472,6 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
       <div class="card">
         <div class="card-header"><div><span class="card-title">Чеки</span><div class="card-sub">Ручной ввод</div></div></div>
         <div class="row-list" id="receipt-list"></div>
-      </div>
-    </div>
-
-    <!-- PURCHASES -->
-    <div id="tab-purchases" class="tab-page">
-      <div class="card">
-        <div class="card-header"><div><span class="card-title">Регулярные покупки</span><div class="card-sub">Корм, наполнитель и другие периодические расходы — копим равномерно</div></div></div>
-        <div class="piggy-grid" id="purchases-grid"></div>
       </div>
     </div>
 
@@ -478,7 +522,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
     <div id="modal-body"></div>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeModal()">Отмена</button>
-      <button class="btn btn-primary" onclick="confirmModal()">Сохранить</button>
+      <button class="btn btn-primary" id="modal-confirm-btn" onclick="confirmModal()">Сохранить</button>
     </div>
   </div>
 </div>
@@ -486,7 +530,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 <!-- Firebase SDK -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getDatabase, ref, onValue, set, get } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDOQSPrLXSf7hpwwieChBzXvQwGaqD0PpI",
@@ -503,7 +547,6 @@ const app = initializeApp(firebaseConfig);
 const db  = getDatabase(app);
 const DATA_REF = ref(db, 'budget');
 
-// ── expose to global scope ──
 window._fbSet = (data) => set(DATA_REF, data);
 window._fbOnValue = (cb) => onValue(DATA_REF, snap => cb(snap.val()));
 window._fbReady = true;
@@ -526,11 +569,14 @@ const PAY_BADGE=p=>`<span class="badge badge-${p}">${PAY_LABEL[p]||p}</span>`;
 const REMINDER_COLORS=['#3B6EF0','#5B3DB5','#B03070','#1E8040','#A06010','#C0392B','#1A7A62'];
 const PIGGY_COLORS=['#3B6EF0','#1E8040','#A06010','#B03070','#5B3DB5','#C0392B'];
 const PLAN_COLORS=['#3B6EF0','#C0392B','#1E8040','#5B3DB5','#A06010','#B03070','#1A7A62','#7A5030'];
+const PF_COLORS=['#A06010','#5B3DB5','#3B6EF0','#1E8040','#B03070','#C0392B','#1A7A62'];
+const PF_EMOJIS=['🐶','🐱','🐾','🦴','🐟','🌿','💊','🛁','🧸'];
 
 function defaultState(){
   return{
     incomes:[],expenses:[],animalExpenses:[],reminders:[],grocery:[],receipts:[],savings:[],
-    plannedExpenses:[],plannedPaid:{},recurringPurchases:[],
+    plannedExpenses:[],plannedPaid:{},
+    petFunds:[], // ← new: pet fund categories
     balances:{card:0,cash:0,crypto:0},
     personFilter:'all',catFilter:'all',groceryFilter:'all',
     nextId:1,
@@ -541,7 +587,6 @@ let S=defaultState();
 let saveTimer=null;
 let ignoreNextRemote=false;
 
-// ── SYNC STATUS ──
 function setSyncStatus(status){
   const dot=document.getElementById('sync-dot');
   const txt=document.getElementById('sync-text');
@@ -550,7 +595,6 @@ function setSyncStatus(status){
   txt.textContent=status==='syncing'?'Сохранение...':status==='error'?'Ошибка связи':'Синхронизировано';
 }
 
-// ── SAVE TO FIREBASE ──
 function save(){
   clearTimeout(saveTimer);
   setSyncStatus('syncing');
@@ -561,19 +605,19 @@ function save(){
         .then(()=>setSyncStatus('ok'))
         .catch(()=>setSyncStatus('error'));
     }
-  },600); // debounce 600ms
+  },600);
 }
 
-// ── FIREBASE INIT ──
 function initFirebase(){
   window._fbOnValue(remoteData=>{
     if(ignoreNextRemote){ignoreNextRemote=false;return;}
     if(remoteData){
       S=Object.assign(defaultState(),remoteData);
+      // ensure arrays exist
+      if(!S.petFunds)S.petFunds=[];
       renderTab(currentTab);
       setSyncStatus('ok');
     }
-    // Hide loading
     const lo=document.getElementById('loading-overlay');
     if(lo)lo.classList.add('hidden');
     setTimeout(()=>{if(lo)lo.style.display='none';},500);
@@ -581,14 +625,13 @@ function initFirebase(){
 }
 
 window.addEventListener('firebase-ready',initFirebase);
-// fallback if module already ran
 if(window._fbReady)initFirebase();
 
 function nextId(){S.nextId=(S.nextId||1)+1;return S.nextId;}
 
 let currentTab='overview';
-const TAB_TITLES={overview:'Обзор',income:'Доходы',expenses:'Расходы',planned:'Плановые расходы',animals:'Животные',reminders:'Напоминания',grocery:'Список продуктов',receipts:'Чеки',savings:'Копилки',purchases:'Покупки'};
-const TAB_ADD_TYPE={overview:'expense',income:'income',expenses:'expense',planned:'planned',animals:'animal',reminders:'reminder',grocery:'grocery',receipts:'receipt',savings:'saving',purchases:'purchase'};
+const TAB_TITLES={overview:'Обзор',income:'Доходы',expenses:'Расходы',planned:'Плановые расходы',animals:'Животные',reminders:'Напоминания',grocery:'Список продуктов',receipts:'Чеки',savings:'Копилки'};
+const TAB_ADD_TYPE={overview:'expense',income:'income',expenses:'expense',planned:'planned',animals:'animal',reminders:'reminder',grocery:'grocery',receipts:'receipt',savings:'saving'};
 
 function showTab(name,btn){
   document.querySelectorAll('.tab-page').forEach(t=>t.classList.remove('active'));
@@ -613,9 +656,10 @@ function weekOfDate(d){if(!d)return 1;const day=parseInt(d.split('-')[2],10);if(
 function todayStr(){const d=new Date();return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
 function fmt(n){return(n||0).toLocaleString('ru-RU',{minimumFractionDigits:0,maximumFractionDigits:0})+' €';}
 function fmtDate(d){if(!d)return'';const[y,m,dd]=d.split('-');return`${dd}.${m}.${y}`;}
+function daysBetween(a,b){return Math.round((new Date(b)-new Date(a))/(1000*60*60*24));}
 
 function renderTab(name){
-  const fn={overview:renderOverview,income:renderIncome,expenses:renderExpenses,planned:renderPlanned,animals:renderAnimals,reminders:renderReminders,grocery:renderGrocery,receipts:renderReceipts,savings:renderSavings,purchases:renderPurchases};
+  const fn={overview:renderOverview,income:renderIncome,expenses:renderExpenses,planned:renderPlanned,animals:renderAnimals,reminders:renderReminders,grocery:renderGrocery,receipts:renderReceipts,savings:renderSavings};
   if(fn[name])fn[name]();
 }
 
@@ -642,10 +686,6 @@ function togglePaid(id){
   if(currentTab!=='overview')renderOverviewStrip();
 }
 
-// ── MONTHLY SAVINGS AUTO-CONTRIB ──
-function intervalMonths(p){return p.intervalUnit==='weeks'?(p.intervalValue*7)/30:p.intervalValue;}
-function monthlyEquivalent(p){const im=intervalMonths(p);return im>0?p.amount/im:0;}
-
 function applyMonthlyContributions(){
   const key=`contrib_${curYear}_${String(curMonth+1).padStart(2,'0')}`;
   if(S[key])return;
@@ -655,10 +695,237 @@ function applyMonthlyContributions(){
     if(linked)return;
     sv.current=Math.min(sv.goal,sv.current+(sv.monthlyAmount||0));
   });
-  (S.recurringPurchases||[]).forEach(p=>{
-    p.current=(p.current||0)+monthlyEquivalent(p);
-  });
   S[key]=true;save();
+}
+
+// ──────────────────────────────────────────────
+//  PET FUND LOGIC
+// ──────────────────────────────────────────────
+
+/**
+ * For each petFund item we store:
+ *  id, name, emoji, color
+ *  cycleDays      — purchase cycle in days (e.g. 40, 60, 90, 7)
+ *  monthlyAmount  — how much to set aside per month
+ *  currentSaved   — accumulated balance
+ *  lastPurchaseDate — ISO date string of last purchase
+ *  purchaseHistory — [{date, amount, comment}]
+ *  totalCost      — typical purchase cost (used for progress bar)
+ */
+
+function pfNextPurchaseDate(pf){
+  if(!pf.lastPurchaseDate)return null;
+  const d=new Date(pf.lastPurchaseDate);
+  d.setDate(d.getDate()+(pf.cycleDays||30));
+  return d.toISOString().slice(0,10);
+}
+
+function pfDaysUntilNext(pf){
+  const next=pfNextPurchaseDate(pf);
+  if(!next)return null;
+  return daysBetween(todayStr(),next);
+}
+
+function pfStatus(pf){
+  const days=pfDaysUntilNext(pf);
+  if(days===null)return{label:'Ещё не покупали',cls:'accumulating'};
+  if(days<0)return{label:`Просрочено на ${Math.abs(days)} дн.`,cls:'overdue'};
+  if(days===0)return{label:'Покупать сегодня!',cls:'overdue'};
+  if(days<=7)return{label:`Через ${days} дн.`,cls:'soon'};
+  return{label:`Через ${days} дн.`,cls:'ok'};
+}
+
+// Auto-accrue monthly amounts for current month
+function applyPetFundMonthlyAccrual(){
+  if(!S.petFunds||!S.petFunds.length)return;
+  const key=`pf_contrib_${curYear}_${String(curMonth+1).padStart(2,'0')}`;
+  if(S[key])return;
+  S.petFunds.forEach(pf=>{
+    if(pf.monthlyAmount>0){
+      pf.currentSaved=(pf.currentSaved||0)+(pf.monthlyAmount||0);
+    }
+  });
+  S[key]=true;
+  save();
+}
+
+function renderPetFund(){
+  applyPetFundMonthlyAccrual();
+  const list=S.petFunds||[];
+  const totalSaved=list.reduce((s,pf)=>s+(pf.currentSaved||0),0);
+  const totalMonthly=list.reduce((s,pf)=>s+(pf.monthlyAmount||0),0);
+
+  // Total strip
+  const strip=document.getElementById('pf-total-strip');
+  if(strip){
+    if(list.length===0){strip.innerHTML='';return;}
+    strip.innerHTML=`<div class="pf-total-strip">
+      <div>
+        <div class="pf-total-label">Всего в фонде</div>
+        <div class="pf-total-val">${fmt(totalSaved)}</div>
+        <div class="pf-total-sub">${list.length} статей · откладываем ${fmt(totalMonthly)}/мес</div>
+      </div>
+      <div style="text-align:right">
+        <div class="pf-total-label">Ближайшая покупка</div>
+        <div style="font-size:14px;font-weight:700;color:#fff">${nearestPurchase(list)}</div>
+      </div>
+    </div>`;
+  }
+
+  const grid=document.getElementById('pet-fund-grid');
+  if(!grid)return;
+
+  if(!list.length){
+    grid.innerHTML=`<div class="pf-add-card" onclick="openModal('petfund')"><i class="fa-solid fa-plus"></i><span>Добавить статью расходов</span><span style="font-size:10px;color:var(--text3);margin-top:2px">Корм, наполнитель, ветеринар...</span></div>`;
+    return;
+  }
+
+  grid.innerHTML=list.map((pf,i)=>{
+    const col=pf.color||PF_COLORS[i%PF_COLORS.length];
+    const status=pfStatus(pf);
+    const next=pfNextPurchaseDate(pf);
+    const days=pfDaysUntilNext(pf);
+    const cost=pf.totalCost||0;
+    const saved=pf.currentSaved||0;
+    const pct=cost>0?Math.min(100,Math.round((saved/cost)*100)):Math.min(100,Math.round((saved/Math.max(1,pf.monthlyAmount))*100));
+    const canBuy=cost>0?saved>=cost*0.9:true;
+    const monthsToFull=cost>0&&pf.monthlyAmount>0?Math.max(0,Math.ceil((cost-saved)/pf.monthlyAmount)):null;
+
+    return`<div class="pf-card">
+      <div class="pf-card-accent" style="background:${col}"></div>
+      <span class="pf-emoji">${pf.emoji||'🐾'}</span>
+      <div class="pf-name">${esc(pf.name)}</div>
+      <div class="pf-cycle">Цикл: каждые ${pf.cycleDays} дн. · ${fmt(pf.monthlyAmount)}/мес</div>
+      <div class="pf-status-badge ${status.cls}"><i class="fa-solid ${status.cls==='ok'||status.cls==='accumulating'?'fa-clock':'status.cls==='soon'?fa-triangle-exclamation':'fa-circle-exclamation'}"></i>${status.label}</div>
+      <div class="pf-amounts">
+        <span class="pf-saved" style="color:${col}">${fmt(saved)}</span>
+        ${cost>0?`<span class="pf-of">/ ${fmt(cost)}</span>`:'<span class="pf-of">накоплено</span>'}
+      </div>
+      <div class="pf-prog"><div class="pf-fill" style="width:${pct}%;background:${col}"></div></div>
+      <div class="pf-meta">
+        ${next?`<span class="pf-meta-item"><i class="fa-solid fa-calendar"></i>Куп. ${fmtDate(next)}</span>`:'<span class="pf-meta-item"><i class="fa-solid fa-calendar-plus"></i>Ещё не покупали</span>'}
+        ${monthsToFull!==null&&monthsToFull>0?`<span class="pf-meta-item"><i class="fa-solid fa-hourglass-half"></i>≈${monthsToFull} мес до полного</span>`:''}
+        ${pf.purchaseHistory&&pf.purchaseHistory.length?`<span class="pf-meta-item"><i class="fa-solid fa-bag-shopping"></i>${pf.purchaseHistory.length} покупок</span>`:''}
+      </div>
+      <div class="pf-actions">
+        <button class="pf-buy-btn ${canBuy?'ready':'not-ready'}" onclick="${canBuy?`pfBought(${pf.id})`:''}">
+          <i class="fa-solid ${canBuy?'fa-check':'fa-lock'}"></i>
+          ${canBuy?'Купили!':'Ещё копим'}
+        </button>
+        <button class="pf-edit-btn" onclick="pfEdit(${pf.id})" title="Настройки"><i class="fa-solid fa-pen"></i></button>
+        <button class="pf-del-btn" onclick="pfDel(${pf.id})" title="Удалить"><i class="fa-solid fa-trash"></i></button>
+      </div>
+    </div>`;
+  }).join('')+`<div class="pf-add-card" onclick="openModal('petfund')"><i class="fa-solid fa-plus"></i><span>Добавить статью</span></div>`;
+}
+
+function nearestPurchase(list){
+  const upcoming=list.map(pf=>({name:pf.name,days:pfDaysUntilNext(pf)})).filter(x=>x.days!==null).sort((a,b)=>a.days-b.days);
+  if(!upcoming.length)return'—';
+  const u=upcoming[0];
+  if(u.days<=0)return`${esc(u.name)} — сегодня!`;
+  return`${esc(u.name)} — через ${u.days} дн.`;
+}
+
+function pfBought(id){
+  const pf=(S.petFunds||[]).find(p=>p.id===id);
+  if(!pf)return;
+  openPfBoughtModal(pf);
+}
+
+function openPfBoughtModal(pf){
+  // Open a special modal for recording a purchase
+  activeModal='pfbought';
+  pfBoughtTarget=pf.id;
+  document.getElementById('modal-title').textContent=`✅ Купили: ${pf.name}`;
+  document.getElementById('modal-body').innerHTML=`
+    <div style="background:var(--green-bg);border:1px solid #b8e0c8;border-radius:var(--r-md);padding:12px 16px;margin-bottom:16px;font-size:13px;color:var(--green);font-weight:600">
+      <i class="fa-solid fa-circle-check" style="margin-right:6px"></i>
+      В фонде сейчас: ${fmt(pf.currentSaved||0)}
+    </div>
+    <div class="fg2">
+      <div class="field"><label>Сколько потратили (€)</label><input type="number" id="pf-spend" placeholder="${pf.totalCost||0}" min="0" step="0.01" autofocus></div>
+      <div class="field"><label>Дата покупки</label><input type="date" id="pf-date" value="${todayStr()}"></div>
+    </div>
+    <div class="fg1"><div class="field"><label>Комментарий</label><input type="text" id="pf-comment" placeholder="Корм Royal Canin, 12кг..."></div></div>
+    <div style="background:var(--amber-bg);border:1px solid #f0d9a0;border-radius:var(--r-md);padding:10px 14px;font-size:12px;color:var(--amber);font-weight:600">
+      <i class="fa-solid fa-rotate" style="margin-right:5px"></i>
+      После сохранения: сумма покупки спишется с фонда, следующая дата рассчитается автоматически (через ${pf.cycleDays} дн.)
+    </div>`;
+  document.getElementById('modal-confirm-btn').textContent='Записать покупку';
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+let pfBoughtTarget=null;
+let pfEditTarget=null;
+
+function pfEdit(id){
+  const pf=(S.petFunds||[]).find(p=>p.id===id);
+  if(!pf)return;
+  pfEditTarget=id;
+  activeModal='pfedit';
+  document.getElementById('modal-title').textContent=`Настройки: ${pf.name}`;
+  document.getElementById('modal-body').innerHTML=pfEditForm(pf);
+  document.getElementById('modal-confirm-btn').textContent='Сохранить';
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+function pfEditForm(pf){
+  const emojiOpts=PF_EMOJIS.map(e=>`<option value="${e}" ${pf.emoji===e?'selected':''}>${e}</option>`).join('');
+  return`
+    <div class="fg2">
+      <div class="field"><label>Название</label><input type="text" id="pfe-name" value="${esc(pf.name)}" autofocus></div>
+      <div class="field"><label>Эмодзи</label><select id="pfe-emoji">${emojiOpts}</select></div>
+    </div>
+    <div class="fg2">
+      <div class="field">
+        <label>Цикл покупки (дней)</label>
+        <input type="number" id="pfe-cycle" value="${pf.cycleDays||30}" min="1" max="365" step="1">
+        <div style="font-size:11px;color:var(--text3);margin-top:3px">Например: 40 (раз в 40 дней), 7 (раз в неделю), 90 (раз в 3 мес)</div>
+      </div>
+      <div class="field">
+        <label>Откладывать в месяц (€)</label>
+        <input type="number" id="pfe-monthly" value="${pf.monthlyAmount||0}" min="0" step="1" oninput="pfCalcPreview()">
+      </div>
+    </div>
+    <div class="fg2">
+      <div class="field">
+        <label>Стоимость одной закупки (€)</label>
+        <input type="number" id="pfe-cost" value="${pf.totalCost||0}" min="0" step="1" oninput="pfCalcPreview()">
+      </div>
+      <div class="field">
+        <label>Сейчас в фонде (€)</label>
+        <input type="number" id="pfe-saved" value="${pf.currentSaved||0}" min="0" step="1">
+      </div>
+    </div>
+    <div class="field" style="margin-bottom:12px"><label>Дата последней покупки</label><input type="date" id="pfe-lastdate" value="${pf.lastPurchaseDate||''}"></div>
+    <div id="pfe-preview" style="background:var(--accent-bg);border:1px solid #c4d5fa;border-radius:var(--r-md);padding:10px 14px;font-size:12px;color:var(--accent-dark);font-weight:600;display:none"></div>`;
+}
+
+function pfCalcPreview(){
+  const monthly=parseFloat(document.getElementById('pfe-monthly')?.value)||0;
+  const cost=parseFloat(document.getElementById('pfe-cost')?.value)||0;
+  const cycle=parseInt(document.getElementById('pfe-cycle')?.value)||30;
+  const prev=document.getElementById('pfe-preview');
+  if(!prev)return;
+  if(monthly>0&&cost>0){
+    const months=cycle/30;
+    const accrued=monthly*months;
+    const diff=accrued-cost;
+    prev.style.display='';
+    if(diff>=0){
+      prev.innerHTML=`<i class="fa-solid fa-circle-check" style="margin-right:5px;color:var(--green)"></i>За ${cycle} дней накопится <b>${fmt(accrued)}</b> — хватит на закупку (${fmt(cost)}) + останется ${fmt(diff)}`;
+    } else {
+      prev.innerHTML=`<i class="fa-solid fa-triangle-exclamation" style="margin-right:5px;color:var(--amber)"></i>За ${cycle} дней накопится <b>${fmt(accrued)}</b> — не хватает ${fmt(Math.abs(diff))} до закупки. Нужно откладывать минимум <b>${fmt(Math.ceil(cost/months))}/мес</b>`;
+    }
+  } else {
+    prev.style.display='none';
+  }
+}
+
+function pfDel(id){
+  S.petFunds=(S.petFunds||[]).filter(p=>p.id!==id);
+  save();renderAnimals();toast('Удалено');
 }
 
 // ── OVERVIEW ──
@@ -725,8 +992,9 @@ function renderOverview(){
   const plans=S.plannedExpenses||[];
   const totalPaidPl=plans.filter(p=>isPaid(p.id)).reduce((s,p)=>s+(p.amount||0),0);
   const totalUnpaidPl=plans.filter(p=>!isPaid(p.id)).reduce((s,p)=>s+(p.amount||0),0);
+  const totalPfMonthly=(S.petFunds||[]).reduce((s,pf)=>s+(pf.monthlyAmount||0),0);
   const totalAll=totalExp+totalAExp;
-  const balance=totalInc-totalAll-totalUnpaidPl;
+  const balance=totalInc-totalAll-totalUnpaidPl-totalPfMonthly;
   const diana=inc.filter(i=>i.person==='diana').reduce((s,i)=>s+(i.amount||0),0);
   const kristina=inc.filter(i=>i.person==='kristina').reduce((s,i)=>s+(i.amount||0),0);
 
@@ -744,6 +1012,7 @@ function renderOverview(){
     <div class="sum-row"><span class="sl">Диана</span><span class="sr">${fmt(diana)}</span></div>
     <div class="sum-row"><span class="sl">Кристина</span><span class="sr">${fmt(kristina)}</span></div>
     <div class="sum-row"><span class="sl">Расходы (факт)</span><span class="sr">${fmt(totalAll)}</span></div>
+    <div class="sum-row"><span class="sl">Фонд животных</span><span class="sr" style="color:var(--amber)">${fmt(totalPfMonthly)}/мес</span></div>
     <div class="sum-row"><span class="sl">Планы оплачено</span><span class="sr">${fmt(totalPaidPl)}</span></div>
     <div class="sum-row"><span class="sl">Планы ещё нужно</span><span class="sr" style="color:var(--red)">${fmt(totalUnpaidPl)}</span></div>
     <hr class="sum-divider">
@@ -842,6 +1111,7 @@ function renderPlanned(){
 
 // ── ANIMALS ──
 function renderAnimals(){
+  renderPetFund();
   const list=S.animalExpenses.filter(e=>inMonth(e.date));
   const total=list.reduce((s,e)=>s+(e.amount||0),0);
   document.getElementById('animal-summary').innerHTML=`<div class="animal-total-box"><div class="animal-total-icon">🐾</div><div><div class="animal-total-label">2 кота + 2 собаки</div><div class="animal-total-val">${fmt(total)}</div><div class="animal-total-sub">всего за ${MONTHS[curMonth]}</div></div></div>`;
@@ -929,9 +1199,7 @@ function del(list,id){
     const linkedPlan=(S.plannedExpenses||[]).find(p=>p.savingId===id);
     if(linkedPlan){
       S.plannedExpenses=S.plannedExpenses.filter(p=>p.id!==linkedPlan.id);
-      if(S.plannedPaid){
-        Object.keys(S.plannedPaid).forEach(k=>{if(k.startsWith(linkedPlan.id+'_'))delete S.plannedPaid[k];});
-      }
+      if(S.plannedPaid){Object.keys(S.plannedPaid).forEach(k=>{if(k.startsWith(linkedPlan.id+'_'))delete S.plannedPaid[k];});}
     }
   }
   S[list]=(S[list]||[]).filter(item=>item.id!==id);
@@ -941,6 +1209,7 @@ function del(list,id){
 // ── FORMS ──
 const PAY_OPTS=`<option value="card">Карта</option><option value="cash">Наличные</option><option value="crypto">Крипта</option>`;
 const CAT_OPTS=CATS.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
+const EMOJI_OPTS=PF_EMOJIS.map(e=>`<option value="${e}">${e}</option>`).join('');
 
 const FORMS={
   income:()=>`<div class="fg2"><div class="field"><label>Кто получает</label><select id="m-person"><option value="diana">Диана</option><option value="kristina">Кристина</option></select></div><div class="field"><label>Сумма (€)</label><input type="number" id="m-amount" placeholder="0" min="0" step="0.01" autofocus></div></div><div class="fg2"><div class="field"><label>Тип</label><select id="m-type"><option value="salary">Зарплата</option><option value="weekly">Еженедельный</option><option value="freelance">Фриланс</option><option value="other">Другое</option></select></div><div class="field"><label>Неделя</label><select id="m-week"><option value="">—</option><option value="1">Нед. 1 (1–7)</option><option value="2">Нед. 2 (8–14)</option><option value="3">Нед. 3 (15–21)</option><option value="4">Нед. 4 (22–31)</option></select></div></div><div class="fg2"><div class="field"><label>Способ</label><select id="m-pay">${PAY_OPTS}</select></div><div class="field"><label>Дата</label><input type="date" id="m-date" value="${todayStr()}"></div></div><div class="fg1"><div class="field"><label>Комментарий</label><input type="text" id="m-comment" placeholder="Зарплата, проект..."></div></div>`,
@@ -951,22 +1220,131 @@ const FORMS={
   grocery:()=>`<div class="fg2"><div class="field"><label>Продукт</label><input type="text" id="m-name" placeholder="Молоко, хлеб..." autofocus></div><div class="field"><label>Количество</label><input type="text" id="m-qty" placeholder="2л, 3 шт..."></div></div><div class="fg2"><div class="field"><label>Цена (€)</label><input type="number" id="m-price" placeholder="0" min="0" step="0.01"></div><div class="field"><label>Кто добавил</label><select id="m-person"><option value="all">Обе</option><option value="diana">Диана</option><option value="kristina">Кристина</option></select></div></div>`,
   receipt:()=>`<div class="fg2"><div class="field"><label>Магазин</label><input type="text" id="m-store" placeholder="Lidl, Konzum..." autofocus></div><div class="field"><label>Сумма (€)</label><input type="number" id="m-amount" placeholder="0" min="0" step="0.01"></div></div><div class="fg2"><div class="field"><label>Дата</label><input type="date" id="m-date" value="${todayStr()}"></div><div class="field"><label>Способ</label><select id="m-pay">${PAY_OPTS}</select></div></div><div class="fg1"><div class="field"><label>Комментарий</label><textarea id="m-comment" placeholder="Что купили..."></textarea></div></div>`,
   saving:()=>`<div class="fg2"><div class="field"><label>Название цели</label><input type="text" id="m-name" placeholder="Прививки, отпуск..." autofocus></div><div class="field"><label>Цель (€)</label><input type="number" id="m-goal" placeholder="1000" min="1" step="1"></div></div><div class="fg1"><div class="field"><label>Уже накоплено (€)</label><input type="number" id="m-current" placeholder="0" value="0" min="0" step="1"></div></div><hr style="border:none;border-top:1px solid var(--border);margin:14px 0"><div style="margin-bottom:8px;font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.04em">Ежемесячный взнос</div><div class="fg1"><div class="toggle-wrap" onclick="toggleMonthlyMode()" id="monthly-toggle-wrap"><div class="toggle-switch" id="monthly-toggle-sw"></div><span class="toggle-label">Откладывать каждый месяц</span></div></div><div id="monthly-amount-field" style="display:none;margin-top:8px"><div class="field"><label>Сумма в месяц (€)</label><input type="number" id="m-monthly" placeholder="50" min="1" step="1" oninput="updateMonthlyPreview()"><div id="monthly-preview" style="font-size:11px;color:var(--amber);margin-top:4px;font-weight:600"></div></div></div>`,
+
+  petfund:()=>`
+    <div style="background:var(--amber-bg);border:1px solid #f0d9a0;border-radius:var(--r-md);padding:10px 14px;margin-bottom:16px;font-size:12px;color:var(--amber);font-weight:600;line-height:1.5">
+      <i class="fa-solid fa-circle-info" style="margin-right:5px"></i>
+      Укажите цикл в днях и ежемесячный взнос — приложение само посчитает, когда накопится нужная сумма
+    </div>
+    <div class="fg2">
+      <div class="field"><label>Название</label><input type="text" id="m-name" placeholder="Корм для собак, наполнитель..." autofocus></div>
+      <div class="field"><label>Эмодзи</label><select id="m-emoji">${EMOJI_OPTS}</select></div>
+    </div>
+    <div class="fg2">
+      <div class="field">
+        <label>Цикл покупки (дней)</label>
+        <input type="number" id="m-cycle" value="30" min="1" max="365" step="1" oninput="pfNewCalcPreview()">
+        <div style="font-size:11px;color:var(--text3);margin-top:3px">7 = раз в нед, 40 = раз в 40 дней, 90 = раз в 3 мес</div>
+      </div>
+      <div class="field">
+        <label>Откладывать в месяц (€)</label>
+        <input type="number" id="m-monthly" placeholder="60" min="0" step="1" oninput="pfNewCalcPreview()">
+      </div>
+    </div>
+    <div class="fg2">
+      <div class="field">
+        <label>Стоимость одной закупки (€)</label>
+        <input type="number" id="m-cost" placeholder="120" min="0" step="1" oninput="pfNewCalcPreview()">
+        <div style="font-size:11px;color:var(--text3);margin-top:3px">Оставьте 0 если не знаете</div>
+      </div>
+      <div class="field">
+        <label>Уже отложено (€)</label>
+        <input type="number" id="m-saved" value="0" min="0" step="1">
+      </div>
+    </div>
+    <div class="field" style="margin-bottom:12px">
+      <label>Дата последней покупки (если была)</label>
+      <input type="date" id="m-lastdate" value="">
+    </div>
+    <div id="pf-new-preview" style="display:none;border-radius:var(--r-md);padding:10px 14px;font-size:12px;font-weight:600;line-height:1.6"></div>
+  `,
 };
+
+function pfNewCalcPreview(){
+  const monthly=parseFloat(document.getElementById('m-monthly')?.value)||0;
+  const cost=parseFloat(document.getElementById('m-cost')?.value)||0;
+  const cycle=parseInt(document.getElementById('m-cycle')?.value)||30;
+  const prev=document.getElementById('pf-new-preview');
+  if(!prev)return;
+  if(monthly>0){
+    const months=cycle/30;
+    const accrued=monthly*months;
+    prev.style.display='';
+    if(cost>0){
+      const diff=accrued-cost;
+      if(diff>=0){
+        prev.style.cssText='display:block;background:var(--green-bg);border:1px solid #b8e0c8;border-radius:var(--r-md);padding:10px 14px;font-size:12px;font-weight:600;color:var(--green);line-height:1.6';
+        prev.innerHTML=`✅ За ${cycle} дней накопится <b>${fmt(accrued)}</b> — хватит на закупку (${fmt(cost)}). Остаток: ${fmt(diff)}`;
+      } else {
+        prev.style.cssText='display:block;background:var(--amber-bg);border:1px solid #f0d9a0;border-radius:var(--r-md);padding:10px 14px;font-size:12px;font-weight:600;color:var(--amber);line-height:1.6';
+        prev.innerHTML=`⚠️ За ${cycle} дней накопится <b>${fmt(accrued)}</b>, а нужно ${fmt(cost)}. Не хватает ${fmt(Math.abs(diff))}. Нужно минимум <b>${fmt(Math.ceil(cost/months))}/мес</b>`;
+      }
+    } else {
+      prev.style.cssText='display:block;background:var(--accent-bg);border:1px solid #c4d5fa;border-radius:var(--r-md);padding:10px 14px;font-size:12px;font-weight:600;color:var(--accent-dark);line-height:1.6';
+      prev.innerHTML=`ℹ️ За ${cycle} дней накопится <b>${fmt(accrued)}</b>`;
+    }
+  } else {
+    prev.style.display='none';
+  }
+}
 
 let monthlyModeOn=false;
 function toggleMonthlyMode(){monthlyModeOn=!monthlyModeOn;document.getElementById('monthly-toggle-sw').className='toggle-switch'+(monthlyModeOn?' on':'');document.getElementById('monthly-amount-field').style.display=monthlyModeOn?'block':'none';if(monthlyModeOn)setTimeout(()=>document.getElementById('m-monthly').focus(),50);}
 function updateMonthlyPreview(){const amt=parseFloat(document.getElementById('m-monthly').value)||0;const goal=parseFloat(document.getElementById('m-goal')?.value)||0;const current=parseFloat(document.getElementById('m-current')?.value)||0;const prev=document.getElementById('monthly-preview');if(amt>0&&goal>0){const months=Math.ceil((goal-current)/amt);prev.textContent=`≈ ${months} мес. до цели`;}else prev.textContent='';}
 
-const MODAL_TITLES={income:'Добавить доход',expense:'Добавить расход',planned:'Плановый расход',animal:'Расход на питомца',reminder:'Напоминание',grocery:'Добавить продукт',receipt:'Добавить чек',saving:'Новая копилка'};
-let activeModal=null;monthlyModeOn=false;
+const MODAL_TITLES={income:'Добавить доход',expense:'Добавить расход',planned:'Плановый расход',animal:'Расход на питомца',reminder:'Напоминание',grocery:'Добавить продукт',receipt:'Добавить чек',saving:'Новая копилка',petfund:'Новая статья фонда животных'};
+let activeModal=null;
+monthlyModeOn=false;
 
-function openModal(type){activeModal=type;monthlyModeOn=false;document.getElementById('modal-title').textContent=MODAL_TITLES[type]||'Добавить';document.getElementById('modal-body').innerHTML=(FORMS[type]||(() =>''))();document.getElementById('modal-overlay').classList.add('open');}
-function closeModal(){document.getElementById('modal-overlay').classList.remove('open');activeModal=null;}
+function openModal(type){
+  activeModal=type;
+  monthlyModeOn=false;
+  pfBoughtTarget=null;
+  pfEditTarget=null;
+  document.getElementById('modal-title').textContent=MODAL_TITLES[type]||'Добавить';
+  document.getElementById('modal-body').innerHTML=(FORMS[type]||(() =>''))();
+  document.getElementById('modal-confirm-btn').textContent='Сохранить';
+  document.getElementById('modal-overlay').classList.add('open');
+}
+function closeModal(){document.getElementById('modal-overlay').classList.remove('open');activeModal=null;pfBoughtTarget=null;pfEditTarget=null;}
 function overlayClick(e){if(e.target===document.getElementById('modal-overlay'))closeModal();}
 function gv(id){const el=document.getElementById(id);return el?el.value.trim():'';}
 
 function confirmModal(){
   const id=nextId();
+
+  if(activeModal==='pfbought'){
+    // Record a purchase from the pet fund
+    const pf=(S.petFunds||[]).find(p=>p.id===pfBoughtTarget);
+    if(!pf)return;
+    const spend=parseFloat(gv('pf-spend'))||pf.totalCost||0;
+    const date=gv('pf-date')||todayStr();
+    const comment=gv('pf-comment');
+    // Deduct from fund
+    pf.currentSaved=Math.max(0,(pf.currentSaved||0)-spend);
+    pf.lastPurchaseDate=date;
+    if(!pf.purchaseHistory)pf.purchaseHistory=[];
+    pf.purchaseHistory.unshift({date,amount:spend,comment});
+    // Also log in animal expenses
+    S.animalExpenses.push({id,cat:pf.name,amount:spend,comment:comment||`Закупка: ${pf.name}`,pay:'card',date});
+    save();closeModal();renderAnimals();toast('Покупка записана! 🛒');
+    return;
+  }
+
+  if(activeModal==='pfedit'){
+    const pf=(S.petFunds||[]).find(p=>p.id===pfEditTarget);
+    if(!pf)return;
+    pf.name=gv('pfe-name')||pf.name;
+    pf.emoji=gv('pfe-emoji')||pf.emoji;
+    pf.cycleDays=parseInt(gv('pfe-cycle'))||pf.cycleDays;
+    pf.monthlyAmount=parseFloat(gv('pfe-monthly'))||0;
+    pf.totalCost=parseFloat(gv('pfe-cost'))||0;
+    pf.currentSaved=parseFloat(gv('pfe-saved'))||0;
+    pf.lastPurchaseDate=gv('pfe-lastdate')||pf.lastPurchaseDate||null;
+    save();closeModal();renderAnimals();toast('Настройки сохранены');
+    return;
+  }
+
   if(activeModal==='income'){if(!gv('m-amount')||+gv('m-amount')<=0){shake();return;}S.incomes.push({id,person:gv('m-person'),amount:+gv('m-amount'),type:gv('m-type'),week:gv('m-week')?+gv('m-week'):null,comment:gv('m-comment'),pay:gv('m-pay'),date:gv('m-date')});}
   else if(activeModal==='expense'){if(!gv('m-name')||!gv('m-amount')||+gv('m-amount')<=0){shake();return;}S.expenses.push({id,name:gv('m-name'),cat:gv('m-cat'),amount:+gv('m-amount'),comment:gv('m-comment'),pay:gv('m-pay'),person:gv('m-person'),date:gv('m-date')});}
   else if(activeModal==='planned'){if(!gv('m-name')||!gv('m-amount')||+gv('m-amount')<=0){shake();return;}S.plannedExpenses=S.plannedExpenses||[];S.plannedExpenses.push({id,name:gv('m-name'),amount:+gv('m-amount'),dueDay:gv('m-day')?+gv('m-day'):null,pay:gv('m-pay'),comment:gv('m-comment'),color:PLAN_COLORS[(S.plannedExpenses.length)%PLAN_COLORS.length]});}
@@ -985,13 +1363,31 @@ function confirmModal(){
       S.plannedExpenses.push({id:planId,name:'Копилка: '+gv('m-name'),amount:ma,dueDay:null,pay:'card',comment:'Авто-взнос в копилку',color:col,savingId:id});
     }
   }
+  else if(activeModal==='petfund'){
+    if(!gv('m-name')){shake();return;}
+    if(!S.petFunds)S.petFunds=[];
+    const col=PF_COLORS[S.petFunds.length%PF_COLORS.length];
+    S.petFunds.push({
+      id,
+      name:gv('m-name'),
+      emoji:gv('m-emoji')||'🐾',
+      color:col,
+      cycleDays:parseInt(gv('m-cycle'))||30,
+      monthlyAmount:parseFloat(gv('m-monthly'))||0,
+      totalCost:parseFloat(gv('m-cost'))||0,
+      currentSaved:parseFloat(gv('m-saved'))||0,
+      lastPurchaseDate:gv('m-lastdate')||null,
+      purchaseHistory:[],
+    });
+  }
+
   save();closeModal();renderTab(currentTab);toast('Сохранено ☁️');
 }
 
 function shake(){const box=document.querySelector('.modal-box');box.style.animation='none';setTimeout(()=>{box.style.animation='shake .3s ease';},10);}
 
 function exportData(){const blob=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`budget-backup-${todayStr()}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),5000);toast('Файл скачан');}
-function importData(e){const file=e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=ev=>{try{const data=JSON.parse(ev.target.result);if(data&&typeof data==='object'){Object.assign(S,data);save();renderTab(currentTab);toast('Данные загружены!');}}catch(err){alert('Ошибка чтения файла.');}};reader.readAsText(file);e.target.value='';}
+function importData(e){const file=e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=ev=>{try{const data=JSON.parse(ev.target.result);if(data&&typeof data==='object'){Object.assign(S,data);if(!S.petFunds)S.petFunds=[];save();renderTab(currentTab);toast('Данные загружены!');}}catch(err){alert('Ошибка чтения файла.');}};reader.readAsText(file);e.target.value='';}
 
 let toastTimer=null;
 function toast(msg){const el=document.getElementById('toast');document.getElementById('toast-msg').textContent=msg;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),2400);}
