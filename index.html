@@ -17,6 +17,7 @@
   --green:#1E8040;--green-bg:#E8F5EE;--red:#C0392B;--red-bg:#FDECEA;
   --amber:#A06010;--amber-bg:#FEF3DC;--purple:#5B3DB5;--purple-bg:#EEE9FF;
   --rose:#B03070;--rose-bg:#FDEAF3;--teal:#1A7A62;--teal-bg:#E4F5F0;
+  --orange:#C05010;--orange-bg:#FEF0E4;
   --r-sm:8px;--r-md:12px;--r-lg:16px;--r-xl:20px;
   --shadow:0 2px 8px rgba(0,0,0,.08),0 0 0 1px rgba(0,0,0,.04);
   --shadow-lg:0 8px 32px rgba(0,0,0,.14),0 0 0 1px rgba(0,0,0,.04);
@@ -53,6 +54,8 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 .btn-ghost{background:none;border:1px solid var(--border2);color:var(--text2)}
 .btn-ghost:hover{background:var(--surface2);color:var(--text)}
 .btn-sm{padding:6px 11px;font-size:12px}
+.btn-orange{background:var(--orange);color:#fff;box-shadow:0 1px 3px rgba(192,80,16,.3)}
+.btn-orange:hover{background:#a04010}
 .tab-page{display:none}.tab-page.active{display:block}
 .card{background:var(--surface);border-radius:var(--r-xl);box-shadow:var(--shadow);padding:22px;margin-bottom:16px;border:1px solid var(--border)}
 .card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
@@ -63,12 +66,12 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 .kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--r-lg) var(--r-lg) 0 0}
 .kpi-card.c-green::before{background:var(--green)}.kpi-card.c-red::before{background:var(--red)}
 .kpi-card.c-blue::before{background:var(--accent)}.kpi-card.c-amber::before{background:var(--amber)}
-.kpi-card.c-purple::before{background:var(--purple)}
+.kpi-card.c-purple::before{background:var(--purple)}.kpi-card.c-orange::before{background:var(--orange)}
 .kpi-label{font-size:11px;font-weight:600;color:var(--text3);letter-spacing:.04em;text-transform:uppercase;margin-bottom:8px}
 .kpi-val{font-size:26px;font-weight:700;letter-spacing:-.5px;line-height:1}
 .kpi-card.c-green .kpi-val{color:var(--green)}.kpi-card.c-red .kpi-val{color:var(--red)}
 .kpi-card.c-blue .kpi-val{color:var(--accent-dark)}.kpi-card.c-amber .kpi-val{color:var(--amber)}
-.kpi-card.c-purple .kpi-val{color:var(--purple)}
+.kpi-card.c-purple .kpi-val{color:var(--purple)}.kpi-card.c-orange .kpi-val{color:var(--orange)}
 .kpi-sub{font-size:11px;color:var(--text3);margin-top:5px}
 .summary-box{background:var(--accent-bg);border:1px solid #c4d5fa;border-radius:var(--r-lg);padding:18px 20px;margin-bottom:16px}
 .summary-box-title{font-size:12px;font-weight:700;color:var(--accent-dark);margin-bottom:12px;text-transform:uppercase;letter-spacing:.04em}
@@ -229,7 +232,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 @keyframes spin{to{transform:rotate(360deg)}}
 .loading-text{font-size:14px;color:var(--text3);font-weight:500}
 
-/* ── PET FUND ── */
+/* PET FUND */
 .pet-fund-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;margin-bottom:20px}
 .pf-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r-xl);padding:18px;position:relative;overflow:hidden;box-shadow:var(--shadow)}
 .pf-card-accent{position:absolute;top:0;left:0;right:0;height:4px;border-radius:var(--r-xl) var(--r-xl) 0 0}
@@ -259,20 +262,52 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 .pf-status-badge.overdue{background:var(--red-bg);color:var(--red)}
 .pf-status-badge.accumulating{background:var(--accent-bg);color:var(--accent-dark)}
 .pf-monthly-chip{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;background:var(--amber-bg);color:var(--amber);border:1px solid #f0d9a0}
-.pf-history-item{display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--surface2);border-radius:var(--r-md);border:1px solid transparent}
-.pf-history-item:hover{border-color:var(--border)}
 .pf-add-card{background:var(--surface2);border:2px dashed var(--border2);border-radius:var(--r-xl);padding:24px 18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;transition:all .15s;min-height:120px}
 .pf-add-card:hover{border-color:var(--accent);background:var(--accent-bg)}
 .pf-add-card i{font-size:24px;color:var(--border2)}
 .pf-add-card:hover i{color:var(--accent)}
 .pf-add-card span{font-size:12px;font-weight:600;color:var(--text3)}
 .pf-add-card:hover span{color:var(--accent-dark)}
-.pf-section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
-.pf-section-title{font-size:13px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:8px}
 .pf-total-strip{background:linear-gradient(135deg,#1c1b19 0%,#2d2b28 100%);border-radius:var(--r-lg);padding:16px 20px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
 .pf-total-label{font-size:11px;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
 .pf-total-val{font-size:22px;font-weight:700;color:#fff;letter-spacing:-.5px}
 .pf-total-sub{font-size:11px;color:rgba(255,255,255,.4)}
+/* linked plan badge on pet fund card */
+.pf-plan-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;background:var(--accent-bg);color:var(--accent-dark);border:1px solid #c4d5fa;margin-bottom:8px}
+
+/* FOOD FUND */
+.ff-hero{background:linear-gradient(135deg,#FFF4E4 0%,#FEF8F0 100%);border:1.5px solid #f0d9a0;border-radius:var(--r-xl);padding:22px 24px;margin-bottom:16px;position:relative;overflow:hidden}
+.ff-hero::before{content:'🍽️';position:absolute;right:20px;top:50%;transform:translateY(-50%);font-size:64px;opacity:.12;pointer-events:none}
+.ff-hero-label{font-size:11px;font-weight:700;color:var(--amber);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.ff-hero-main{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.ff-hero-val{font-size:38px;font-weight:700;color:var(--orange);letter-spacing:-.8px;line-height:1}
+.ff-hero-of{font-size:16px;color:var(--text3);font-weight:500}
+.ff-prog{height:10px;background:rgba(0,0,0,.08);border-radius:6px;overflow:hidden;margin-bottom:10px}
+.ff-prog-fill{height:100%;border-radius:6px;transition:width .6s cubic-bezier(.4,0,.2,1)}
+.ff-hero-meta{display:flex;gap:16px;flex-wrap:wrap}
+.ff-hero-meta-item{font-size:12px;color:var(--text2);display:flex;align-items:center;gap:5px;font-weight:500}
+.ff-hero-meta-item i{font-size:11px;color:var(--amber)}
+.ff-period-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-lg);padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:12px;transition:all .12s}
+.ff-period-card:hover{border-color:var(--border2)}
+.ff-period-card.active-period{border-color:var(--orange);background:var(--orange-bg)}
+.ff-period-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.ff-period-info{flex:1}
+.ff-period-name{font-size:13px;font-weight:700;color:var(--text)}
+.ff-period-dates{font-size:11px;color:var(--text3);margin-top:2px}
+.ff-period-amounts{text-align:right;flex-shrink:0}
+.ff-period-spent{font-size:14px;font-weight:700}
+.ff-period-budget{font-size:11px;color:var(--text3)}
+.ff-rollover-badge{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;background:var(--green-bg);color:var(--green);border:1px solid #b8e0c8}
+.ff-stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.ff-stat{background:var(--surface2);border-radius:var(--r-md);padding:14px;text-align:center;border:1px solid var(--border)}
+.ff-stat-label{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+.ff-stat-val{font-size:20px;font-weight:700;letter-spacing:-.3px}
+.ff-rollover-btn{display:flex;align-items:center;gap:8px;padding:12px 16px;border-radius:var(--r-md);border:1.5px solid var(--green);background:var(--green-bg);cursor:pointer;font-size:13px;font-weight:700;color:var(--green);font-family:inherit;transition:all .12s;width:100%;justify-content:center;margin-top:8px}
+.ff-rollover-btn:hover{background:#d0eddb}
+.ov-food-strip{background:linear-gradient(135deg,var(--orange-bg) 0%,#fff8f0 100%);border:1px solid #f0d9a0;border-radius:var(--r-lg);padding:16px 20px;margin-bottom:16px}
+.ov-food-title{font-size:12px;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;display:flex;align-items:center;gap:7px}
+.ov-food-row{display:flex;align-items:center;justify-content:space-between;font-size:13px;margin-bottom:6px}
+.ov-food-row .label{color:var(--text2)}.ov-food-row .val{font-weight:700}
 
 @media(max-width:680px){
   .sidebar{width:100%;height:auto;position:sticky;top:0;flex-direction:row;overflow-x:auto;border-right:none;border-bottom:1px solid var(--border)}
@@ -291,10 +326,12 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
   .content{padding:16px}
   .planned-grid{grid-template-columns:1fr}
   .pet-fund-grid{grid-template-columns:1fr}
+  .ff-stats-grid{grid-template-columns:1fr 1fr}
 }
 @media(max-width:420px){
   .kpi-grid{grid-template-columns:1fr}
   .balance-grid{grid-template-columns:1fr}
+  .ff-stats-grid{grid-template-columns:1fr}
 }
 </style>
 </head>
@@ -324,6 +361,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
     <button class="sb-btn" onclick="showTab('planned',this)"><i class="fa-solid fa-calendar-check"></i><span>Планы</span></button>
     <div class="sb-section-label">Разделы</div>
     <button class="sb-btn" onclick="showTab('animals',this)"><i class="fa-solid fa-paw"></i><span>Животные</span></button>
+    <button class="sb-btn" onclick="showTab('foodfund',this)"><i class="fa-solid fa-basket-shopping"></i><span>Фонд еды</span></button>
     <button class="sb-btn" onclick="showTab('reminders',this)"><i class="fa-solid fa-bell"></i><span>Напоминания</span></button>
     <div class="sb-section-label">Списки</div>
     <button class="sb-btn" onclick="showTab('grocery',this)"><i class="fa-solid fa-cart-shopping"></i><span>Продукты</span></button>
@@ -360,6 +398,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
     <!-- OVERVIEW -->
     <div id="tab-overview" class="tab-page active">
       <div class="kpi-grid" id="kpi-row"></div>
+      <div id="ov-food-strip-wrap"></div>
       <div class="pay-strip" id="ov-planned-strip" style="display:none"></div>
       <div class="card" id="ov-savings-card" style="display:none">
         <div class="card-header"><span class="card-title">Копилки</span></div>
@@ -419,26 +458,39 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 
     <!-- ANIMALS -->
     <div id="tab-animals" class="tab-page">
-      <!-- Pet Fund Section -->
       <div class="card">
         <div class="card-header">
           <div>
             <span class="card-title">🐾 Фонд животных</span>
-            <div class="card-sub">Копим заранее — тратим спокойно</div>
+            <div class="card-sub">Копим заранее — тратим спокойно. Суммы попадают в плановые расходы.</div>
           </div>
           <button class="btn btn-primary btn-sm" onclick="openModal('petfund')"><i class="fa-solid fa-plus"></i> Добавить статью</button>
         </div>
         <div id="pf-total-strip"></div>
         <div class="pet-fund-grid" id="pet-fund-grid"></div>
       </div>
-
-      <!-- Regular animal expenses -->
       <div class="card">
         <div class="card-header"><span class="card-title">Расходы за месяц</span></div>
         <div id="animal-summary"></div>
         <hr class="section-divider">
         <div class="card-title" style="margin-bottom:12px">История</div>
         <div class="row-list" id="animal-list"></div>
+      </div>
+    </div>
+
+    <!-- FOOD FUND -->
+    <div id="tab-foodfund" class="tab-page">
+      <div id="ff-hero-wrap"></div>
+      <div class="card">
+        <div class="card-header">
+          <div><span class="card-title">🍽 Фонд еды</span><div class="card-sub">Бюджет на питание по периодам</div></div>
+          <button class="btn btn-orange btn-sm" onclick="openModal('foodperiod')"><i class="fa-solid fa-plus"></i> Новый период</button>
+        </div>
+        <div id="ff-active-detail"></div>
+      </div>
+      <div class="card" id="ff-history-card" style="display:none">
+        <div class="card-header"><span class="card-title">История периодов</span></div>
+        <div id="ff-history-list"></div>
       </div>
     </div>
 
@@ -558,7 +610,7 @@ window.dispatchEvent(new Event('firebase-ready'));
 
 const MONTHS=['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
 const CATS=[
-  {id:'food',name:'Еда',color:'#1E8040'},{id:'pet',name:'Животные',color:'#A06010'},
+  {id:'food',name:'Еда',color:'#C05010'},{id:'pet',name:'Животные',color:'#A06010'},
   {id:'util',name:'Коммуналка',color:'#3B6EF0'},{id:'health',name:'Здоровье',color:'#C0392B'},
   {id:'clothes',name:'Одежда',color:'#B03070'},{id:'transport',name:'Транспорт',color:'#5B3DB5'},
   {id:'entertainment',name:'Развлечения',color:'#1A7A62'},{id:'home',name:'Дом',color:'#7A5030'},
@@ -571,12 +623,14 @@ const PIGGY_COLORS=['#3B6EF0','#1E8040','#A06010','#B03070','#5B3DB5','#C0392B']
 const PLAN_COLORS=['#3B6EF0','#C0392B','#1E8040','#5B3DB5','#A06010','#B03070','#1A7A62','#7A5030'];
 const PF_COLORS=['#A06010','#5B3DB5','#3B6EF0','#1E8040','#B03070','#C0392B','#1A7A62'];
 const PF_EMOJIS=['🐶','🐱','🐾','🦴','🐟','🌿','💊','🛁','🧸'];
+const FF_PERIOD_LABELS={week:'Неделя',biweek:'2 недели',month:'Месяц',custom:'Свой период'};
 
 function defaultState(){
   return{
     incomes:[],expenses:[],animalExpenses:[],reminders:[],grocery:[],receipts:[],savings:[],
     plannedExpenses:[],plannedPaid:{},
-    petFunds:[], // ← new: pet fund categories
+    petFunds:[],
+    foodFund:{periods:[],activePeriodId:null},
     balances:{card:0,cash:0,crypto:0},
     personFilter:'all',catFilter:'all',groceryFilter:'all',
     nextId:1,
@@ -613,8 +667,9 @@ function initFirebase(){
     if(ignoreNextRemote){ignoreNextRemote=false;return;}
     if(remoteData){
       S=Object.assign(defaultState(),remoteData);
-      // ensure arrays exist
       if(!S.petFunds)S.petFunds=[];
+      if(!S.foodFund)S.foodFund={periods:[],activePeriodId:null};
+      if(!S.foodFund.periods)S.foodFund.periods=[];
       renderTab(currentTab);
       setSyncStatus('ok');
     }
@@ -630,8 +685,8 @@ if(window._fbReady)initFirebase();
 function nextId(){S.nextId=(S.nextId||1)+1;return S.nextId;}
 
 let currentTab='overview';
-const TAB_TITLES={overview:'Обзор',income:'Доходы',expenses:'Расходы',planned:'Плановые расходы',animals:'Животные',reminders:'Напоминания',grocery:'Список продуктов',receipts:'Чеки',savings:'Копилки'};
-const TAB_ADD_TYPE={overview:'expense',income:'income',expenses:'expense',planned:'planned',animals:'animal',reminders:'reminder',grocery:'grocery',receipts:'receipt',savings:'saving'};
+const TAB_TITLES={overview:'Обзор',income:'Доходы',expenses:'Расходы',planned:'Плановые расходы',animals:'Животные',foodfund:'Фонд еды',reminders:'Напоминания',grocery:'Список продуктов',receipts:'Чеки',savings:'Копилки'};
+const TAB_ADD_TYPE={overview:'expense',income:'income',expenses:'expense',planned:'planned',animals:'animal',foodfund:'foodperiod',reminders:'reminder',grocery:'grocery',receipts:'receipt',savings:'saving'};
 
 function showTab(name,btn){
   document.querySelectorAll('.tab-page').forEach(t=>t.classList.remove('active'));
@@ -657,9 +712,10 @@ function todayStr(){const d=new Date();return`${d.getFullYear()}-${String(d.getM
 function fmt(n){return(n||0).toLocaleString('ru-RU',{minimumFractionDigits:0,maximumFractionDigits:0})+' €';}
 function fmtDate(d){if(!d)return'';const[y,m,dd]=d.split('-');return`${dd}.${m}.${y}`;}
 function daysBetween(a,b){return Math.round((new Date(b)-new Date(a))/(1000*60*60*24));}
+function addDays(dateStr,n){const d=new Date(dateStr);d.setDate(d.getDate()+n);return d.toISOString().slice(0,10);}
 
 function renderTab(name){
-  const fn={overview:renderOverview,income:renderIncome,expenses:renderExpenses,planned:renderPlanned,animals:renderAnimals,reminders:renderReminders,grocery:renderGrocery,receipts:renderReceipts,savings:renderSavings};
+  const fn={overview:renderOverview,income:renderIncome,expenses:renderExpenses,planned:renderPlanned,animals:renderAnimals,foodfund:renderFoodFund,reminders:renderReminders,grocery:renderGrocery,receipts:renderReceipts,savings:renderSavings};
   if(fn[name])fn[name]();
 }
 
@@ -698,20 +754,56 @@ function applyMonthlyContributions(){
   S[key]=true;save();
 }
 
-// ──────────────────────────────────────────────
-//  PET FUND LOGIC
-// ──────────────────────────────────────────────
+// ═══════════════════════════════════════════════
+//  PET FUND — with auto plannedExpenses sync
+// ═══════════════════════════════════════════════
 
-/**
- * For each petFund item we store:
- *  id, name, emoji, color
- *  cycleDays      — purchase cycle in days (e.g. 40, 60, 90, 7)
- *  monthlyAmount  — how much to set aside per month
- *  currentSaved   — accumulated balance
- *  lastPurchaseDate — ISO date string of last purchase
- *  purchaseHistory — [{date, amount, comment}]
- *  totalCost      — typical purchase cost (used for progress bar)
- */
+function pfPlanName(pf){return`🐾 Фонд: ${pf.name}`;}
+
+/** Ensure a linked planned expense exists and is up to date */
+function pfSyncPlan(pf){
+  if(!pf.monthlyAmount||pf.monthlyAmount<=0){
+    // Remove linked plan if monthly amount zeroed out
+    if(pf.linkedPlanId){
+      S.plannedExpenses=(S.plannedExpenses||[]).filter(p=>p.id!==pf.linkedPlanId);
+      delete pf.linkedPlanId;
+    }
+    return;
+  }
+  if(!S.plannedExpenses)S.plannedExpenses=[];
+  if(pf.linkedPlanId){
+    const existing=S.plannedExpenses.find(p=>p.id===pf.linkedPlanId);
+    if(existing){
+      existing.name=pfPlanName(pf);
+      existing.amount=pf.monthlyAmount;
+      return;
+    }
+  }
+  // Create new linked plan
+  const planId=nextId();
+  S.plannedExpenses.push({
+    id:planId,
+    name:pfPlanName(pf),
+    amount:pf.monthlyAmount,
+    dueDay:null,
+    pay:'card',
+    comment:'Авто-взнос в фонд животных',
+    color:'#A06010',
+    isPetFund:true,
+    petFundId:pf.id,
+  });
+  pf.linkedPlanId=planId;
+}
+
+/** Remove linked plan when petFund is deleted */
+function pfRemovePlan(pf){
+  if(pf.linkedPlanId){
+    S.plannedExpenses=(S.plannedExpenses||[]).filter(p=>p.id!==pf.linkedPlanId);
+    if(S.plannedPaid){
+      Object.keys(S.plannedPaid).forEach(k=>{if(k.startsWith(pf.linkedPlanId+'_'))delete S.plannedPaid[k];});
+    }
+  }
+}
 
 function pfNextPurchaseDate(pf){
   if(!pf.lastPurchaseDate)return null;
@@ -735,7 +827,6 @@ function pfStatus(pf){
   return{label:`Через ${days} дн.`,cls:'ok'};
 }
 
-// Auto-accrue monthly amounts for current month
 function applyPetFundMonthlyAccrual(){
   if(!S.petFunds||!S.petFunds.length)return;
   const key=`pf_contrib_${curYear}_${String(curMonth+1).padStart(2,'0')}`;
@@ -755,21 +846,22 @@ function renderPetFund(){
   const totalSaved=list.reduce((s,pf)=>s+(pf.currentSaved||0),0);
   const totalMonthly=list.reduce((s,pf)=>s+(pf.monthlyAmount||0),0);
 
-  // Total strip
   const strip=document.getElementById('pf-total-strip');
   if(strip){
-    if(list.length===0){strip.innerHTML='';return;}
-    strip.innerHTML=`<div class="pf-total-strip">
-      <div>
-        <div class="pf-total-label">Всего в фонде</div>
-        <div class="pf-total-val">${fmt(totalSaved)}</div>
-        <div class="pf-total-sub">${list.length} статей · откладываем ${fmt(totalMonthly)}/мес</div>
-      </div>
-      <div style="text-align:right">
-        <div class="pf-total-label">Ближайшая покупка</div>
-        <div style="font-size:14px;font-weight:700;color:#fff">${nearestPurchase(list)}</div>
-      </div>
-    </div>`;
+    if(list.length===0){strip.innerHTML='';
+    }else{
+      strip.innerHTML=`<div class="pf-total-strip">
+        <div>
+          <div class="pf-total-label">Всего в фонде</div>
+          <div class="pf-total-val">${fmt(totalSaved)}</div>
+          <div class="pf-total-sub">${list.length} статей · откладываем ${fmt(totalMonthly)}/мес → в плановых расходах</div>
+        </div>
+        <div style="text-align:right">
+          <div class="pf-total-label">Ближайшая покупка</div>
+          <div style="font-size:14px;font-weight:700;color:#fff">${nearestPurchase(list)}</div>
+        </div>
+      </div>`;
+    }
   }
 
   const grid=document.getElementById('pet-fund-grid');
@@ -784,19 +876,21 @@ function renderPetFund(){
     const col=pf.color||PF_COLORS[i%PF_COLORS.length];
     const status=pfStatus(pf);
     const next=pfNextPurchaseDate(pf);
-    const days=pfDaysUntilNext(pf);
     const cost=pf.totalCost||0;
     const saved=pf.currentSaved||0;
     const pct=cost>0?Math.min(100,Math.round((saved/cost)*100)):Math.min(100,Math.round((saved/Math.max(1,pf.monthlyAmount))*100));
     const canBuy=cost>0?saved>=cost*0.9:true;
     const monthsToFull=cost>0&&pf.monthlyAmount>0?Math.max(0,Math.ceil((cost-saved)/pf.monthlyAmount)):null;
+    const planLinked=pf.linkedPlanId&&(S.plannedExpenses||[]).find(p=>p.id===pf.linkedPlanId);
+    const planBadge=pf.monthlyAmount>0?`<div class="pf-plan-badge"><i class="fa-solid fa-calendar-check"></i>${planLinked?(isPaid(pf.linkedPlanId)?'В планах: оплачено':'В планах: не оплачено'):'В плановых расходах'}</div>`:'';
 
     return`<div class="pf-card">
       <div class="pf-card-accent" style="background:${col}"></div>
       <span class="pf-emoji">${pf.emoji||'🐾'}</span>
       <div class="pf-name">${esc(pf.name)}</div>
       <div class="pf-cycle">Цикл: каждые ${pf.cycleDays} дн. · ${fmt(pf.monthlyAmount)}/мес</div>
-      <div class="pf-status-badge ${status.cls}"><i class="fa-solid ${status.cls==='ok'||status.cls==='accumulating' ? 'fa-clock' : status.cls==='soon' ? 'fa-triangle-exclamation' : 'fa-circle-exclamation'}"></i>${status.label}</div>
+      ${planBadge}
+      <div class="pf-status-badge ${status.cls}"><i class="fa-solid ${status.cls==='ok'||status.cls==='accumulating'?'fa-clock':status.cls==='soon'?'fa-triangle-exclamation':'fa-circle-exclamation'}"></i>${status.label}</div>
       <div class="pf-amounts">
         <span class="pf-saved" style="color:${col}">${fmt(saved)}</span>
         ${cost>0?`<span class="pf-of">/ ${fmt(cost)}</span>`:'<span class="pf-of">накоплено</span>'}
@@ -834,7 +928,6 @@ function pfBought(id){
 }
 
 function openPfBoughtModal(pf){
-  // Open a special modal for recording a purchase
   activeModal='pfbought';
   pfBoughtTarget=pf.id;
   document.getElementById('modal-title').textContent=`✅ Купили: ${pf.name}`;
@@ -850,7 +943,7 @@ function openPfBoughtModal(pf){
     <div class="fg1"><div class="field"><label>Комментарий</label><input type="text" id="pf-comment" placeholder="Корм Royal Canin, 12кг..."></div></div>
     <div style="background:var(--amber-bg);border:1px solid #f0d9a0;border-radius:var(--r-md);padding:10px 14px;font-size:12px;color:var(--amber);font-weight:600">
       <i class="fa-solid fa-rotate" style="margin-right:5px"></i>
-      После сохранения: сумма покупки спишется с фонда, следующая дата рассчитается автоматически (через ${pf.cycleDays} дн.)
+      После сохранения: сумма спишется с фонда, следующая дата рассчитается автоматически (через ${pf.cycleDays} дн.)
     </div>`;
   document.getElementById('modal-confirm-btn').textContent='Записать покупку';
   document.getElementById('modal-overlay').classList.add('open');
@@ -881,11 +974,11 @@ function pfEditForm(pf){
       <div class="field">
         <label>Цикл покупки (дней)</label>
         <input type="number" id="pfe-cycle" value="${pf.cycleDays||30}" min="1" max="365" step="1">
-        <div style="font-size:11px;color:var(--text3);margin-top:3px">Например: 40 (раз в 40 дней), 7 (раз в неделю), 90 (раз в 3 мес)</div>
       </div>
       <div class="field">
         <label>Откладывать в месяц (€)</label>
         <input type="number" id="pfe-monthly" value="${pf.monthlyAmount||0}" min="0" step="1" oninput="pfCalcPreview()">
+        <div style="font-size:11px;color:var(--text3);margin-top:3px">Будет автоматически добавлен в плановые расходы</div>
       </div>
     </div>
     <div class="fg2">
@@ -924,8 +1017,182 @@ function pfCalcPreview(){
 }
 
 function pfDel(id){
+  const pf=(S.petFunds||[]).find(p=>p.id===id);
+  if(pf)pfRemovePlan(pf);
   S.petFunds=(S.petFunds||[]).filter(p=>p.id!==id);
   save();renderAnimals();toast('Удалено');
+}
+
+// ═══════════════════════════════════════════════
+//  FOOD FUND
+// ═══════════════════════════════════════════════
+
+function ffPeriodDates(p){
+  if(!p.startDate)return{start:todayStr(),end:todayStr()};
+  let end=p.endDate;
+  if(!end){
+    if(p.periodType==='week')end=addDays(p.startDate,6);
+    else if(p.periodType==='biweek')end=addDays(p.startDate,13);
+    else if(p.periodType==='month'){
+      const d=new Date(p.startDate);
+      d.setMonth(d.getMonth()+1);d.setDate(d.getDate()-1);
+      end=d.toISOString().slice(0,10);
+    } else end=p.startDate;
+  }
+  return{start:p.startDate,end};
+}
+
+function ffPeriodSpent(p){
+  const {start,end}=ffPeriodDates(p);
+  // Sum all food-category expenses in this date range
+  return (S.expenses||[])
+    .filter(e=>e.cat==='food'&&e.date>=start&&e.date<=end)
+    .reduce((s,e)=>s+(e.amount||0),0);
+}
+
+function ffActivePeriod(){
+  if(!S.foodFund||!S.foodFund.periods||!S.foodFund.periods.length)return null;
+  if(S.foodFund.activePeriodId){
+    return S.foodFund.periods.find(p=>p.id===S.foodFund.activePeriodId)||null;
+  }
+  // Find period that contains today
+  const t=todayStr();
+  return S.foodFund.periods.find(p=>{
+    const {start,end}=ffPeriodDates(p);
+    return t>=start&&t<=end;
+  })||S.foodFund.periods[S.foodFund.periods.length-1]||null;
+}
+
+function ffRemainder(p){
+  const spent=ffPeriodSpent(p);
+  const budget=(p.budget||0)+(p.rollover||0);
+  return budget-spent;
+}
+
+function renderFoodFund(){
+  const ff=S.foodFund||{periods:[],activePeriodId:null};
+  const active=ffActivePeriod();
+  const heroWrap=document.getElementById('ff-hero-wrap');
+  const detail=document.getElementById('ff-active-detail');
+  const histCard=document.getElementById('ff-history-card');
+
+  if(!active||!ff.periods.length){
+    if(heroWrap)heroWrap.innerHTML='';
+    if(detail)detail.innerHTML=`<div>${emptyState('fa-basket-shopping','Нет активных периодов — создайте первый бюджет на еду')}</div>`;
+    if(histCard)histCard.style.display='none';
+    return;
+  }
+
+  const {start,end}=ffPeriodDates(active);
+  const spent=ffPeriodSpent(active);
+  const budget=(active.budget||0)+(active.rollover||0);
+  const remainder=budget-spent;
+  const pct=budget>0?Math.min(100,Math.round((spent/budget)*100)):0;
+  const daysLeft=daysBetween(todayStr(),end);
+  const isOver=remainder<0;
+  const fillColor=pct>90?'var(--red)':pct>70?'var(--amber)':'var(--green)';
+
+  if(heroWrap)heroWrap.innerHTML=`
+    <div class="ff-hero" style="margin-bottom:16px">
+      <div class="ff-hero-label">🍽 Активный период · ${FF_PERIOD_LABELS[active.periodType]||'Период'}</div>
+      <div class="ff-hero-main">
+        <div class="ff-hero-val" style="color:${isOver?'var(--red)':'var(--orange)'}">${fmt(remainder)}</div>
+        <div class="ff-hero-of">остаток из ${fmt(budget)}</div>
+      </div>
+      <div class="ff-prog"><div class="ff-prog-fill" style="width:${pct}%;background:${fillColor}"></div></div>
+      <div class="ff-hero-meta">
+        <span class="ff-hero-meta-item"><i class="fa-solid fa-calendar-days"></i>${fmtDate(start)} — ${fmtDate(end)}</span>
+        <span class="ff-hero-meta-item"><i class="fa-solid fa-clock"></i>${daysLeft>=0?`Осталось ${daysLeft} дн.`:'Период завершён'}</span>
+        <span class="ff-hero-meta-item"><i class="fa-solid fa-receipt"></i>Потрачено ${fmt(spent)}</span>
+        ${active.rollover?`<span class="ff-hero-meta-item"><i class="fa-solid fa-rotate-left"></i>Перенос +${fmt(active.rollover)}</span>`:''}
+      </div>
+    </div>`;
+
+  // Food expenses in this period
+  const foodExpenses=(S.expenses||[]).filter(e=>e.cat==='food'&&e.date>=start&&e.date<=end).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  const expRows=foodExpenses.map(e=>`<div class="row-item">
+    <div class="row-icon-emoji">🍽</div>
+    <div class="row-body"><div class="row-name">${esc(e.name)}</div>
+    <div class="row-meta"><span>${fmtDate(e.date)}</span>${e.comment?`<span>${esc(e.comment)}</span>`:''}</div></div>
+    <div class="row-right"><div class="row-amount">${fmt(e.amount)}</div><div class="row-pay-badge">${PAY_BADGE(e.pay)}</div></div>
+  </div>`).join('');
+
+  const canRollover=remainder>0&&daysLeft<0;
+  const rolloverBtn=canRollover?`<button class="ff-rollover-btn" onclick="ffRollover(${active.id})"><i class="fa-solid fa-rotate-right"></i>Перенести остаток ${fmt(remainder)} в новый период</button>`:'';
+  const overBtn=daysLeft<0&&!canRollover?`<button class="ff-rollover-btn" style="border-color:var(--accent);background:var(--accent-bg);color:var(--accent-dark)" onclick="openModal('foodperiod')"><i class="fa-solid fa-plus"></i>Создать следующий период</button>`:'';
+
+  if(detail)detail.innerHTML=`
+    <div class="ff-stats-grid">
+      <div class="ff-stat"><div class="ff-stat-label">Бюджет</div><div class="ff-stat-val" style="color:var(--orange)">${fmt(active.budget||0)}</div></div>
+      <div class="ff-stat"><div class="ff-stat-label">Потрачено</div><div class="ff-stat-val" style="color:${isOver?'var(--red)':'var(--text)'}">${fmt(spent)}</div></div>
+      <div class="ff-stat"><div class="ff-stat-label">Остаток</div><div class="ff-stat-val" style="color:${isOver?'var(--red)':'var(--green)'}">${fmt(remainder)}</div></div>
+    </div>
+    ${rolloverBtn}${overBtn}
+    <hr class="section-divider">
+    <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px">Расходы на еду в этом периоде</div>
+    <div class="row-list">${foodExpenses.length?expRows:emptyState('fa-utensils','Ещё нет расходов на еду в этом периоде')}</div>`;
+
+  // History
+  const past=ff.periods.filter(p=>p.id!==active.id).sort((a,b)=>(b.startDate||'').localeCompare(a.startDate||''));
+  if(past.length&&histCard){
+    histCard.style.display='';
+    document.getElementById('ff-history-list').innerHTML=past.map(p=>{
+      const {start:s,end:e}=ffPeriodDates(p);
+      const sp=ffPeriodSpent(p);
+      const bud=(p.budget||0)+(p.rollover||0);
+      const rem=bud-sp;
+      const dot=rem>=0?'var(--green)':'var(--red)';
+      return`<div class="ff-period-card">
+        <div class="ff-period-dot" style="background:${dot}"></div>
+        <div class="ff-period-info">
+          <div class="ff-period-name">${FF_PERIOD_LABELS[p.periodType]||'Период'}${p.rollover?` <span class="ff-rollover-badge"><i class="fa-solid fa-rotate-left"></i>+${fmt(p.rollover)}</span>`:''}</div>
+          <div class="ff-period-dates">${fmtDate(s)} — ${fmtDate(e)}</div>
+        </div>
+        <div class="ff-period-amounts">
+          <div class="ff-period-spent" style="color:${rem<0?'var(--red)':'var(--text)'}">${fmt(sp)}</div>
+          <div class="ff-period-budget">из ${fmt(bud)}</div>
+        </div>
+        <button class="del-btn" onclick="ffDelPeriod(${p.id})"><i class="fa-solid fa-trash"></i></button>
+      </div>`;
+    }).join('');
+  } else if(histCard){
+    histCard.style.display='none';
+  }
+}
+
+function ffRollover(periodId){
+  const ff=S.foodFund;
+  const p=ff.periods.find(x=>x.id===periodId);
+  if(!p)return;
+  const rem=ffRemainder(p);
+  if(rem<=0)return;
+  const newId=nextId();
+  const {end}=ffPeriodDates(p);
+  const newStart=addDays(end,1);
+  let newEnd;
+  if(p.periodType==='week')newEnd=addDays(newStart,6);
+  else if(p.periodType==='biweek')newEnd=addDays(newStart,13);
+  else if(p.periodType==='month'){const d=new Date(newStart);d.setMonth(d.getMonth()+1);d.setDate(d.getDate()-1);newEnd=d.toISOString().slice(0,10);}
+  else newEnd=addDays(newStart,6);
+  ff.periods.push({id:newId,periodType:p.periodType,budget:p.budget,rollover:rem,startDate:newStart,endDate:newEnd,note:'Перенос остатка'});
+  ff.activePeriodId=newId;
+  save();renderFoodFund();toast(`Перенесено ${fmt(rem)} в новый период! 🎉`);
+}
+
+function ffDelPeriod(id){
+  S.foodFund.periods=S.foodFund.periods.filter(p=>p.id!==id);
+  if(S.foodFund.activePeriodId===id)S.foodFund.activePeriodId=null;
+  save();renderFoodFund();toast('Период удалён');
+}
+
+// Food fund KPI for overview
+function ffOverviewData(){
+  const active=ffActivePeriod();
+  if(!active)return null;
+  const spent=ffPeriodSpent(active);
+  const budget=(active.budget||0)+(active.rollover||0);
+  const remainder=budget-spent;
+  return{spent,budget,remainder,rollover:active.rollover||0};
 }
 
 // ── OVERVIEW ──
@@ -937,13 +1204,16 @@ function renderOverviewStrip(){
   strip.style.display='';
   const unpaid=plans.filter(p=>!isPaid(p.id));
   const totalUnpaid=unpaid.reduce((s,p)=>s+(p.amount||0),0);
-  const rows=plans.slice(0,6).map(p=>`
-    <div class="psr">
+  const rows=plans.slice(0,8).map(p=>{
+    const isPf=p.isPetFund;
+    const icon=isPf?'🐾 ':'';
+    return`<div class="psr">
       <div class="psr-dot" style="background:${p.color||'var(--accent)'}"></div>
-      <span class="psr-name">${esc(p.name)}</span>
+      <span class="psr-name">${icon}${esc(p.name)}</span>
       <span class="psr-amount" style="color:${p.color||'var(--accent)'}">${fmt(p.amount)}</span>
       <span class="psr-status ${isPaid(p.id)?'paid':'unpaid'}">${isPaid(p.id)?'✓ Оплачено':'Не оплачено'}</span>
-    </div>`).join('');
+    </div>`;
+  }).join('');
   strip.innerHTML=`
     <div class="pay-strip-title"><i class="fa-solid fa-calendar-check"></i> Плановые платежи — ${MONTHS[curMonth]}</div>
     <div class="pay-strip-rows">${rows}</div>
@@ -982,6 +1252,22 @@ function renderOverviewSavings(){
     ${rows}`;
 }
 
+function renderOverviewFoodStrip(){
+  const wrap=document.getElementById('ov-food-strip-wrap');
+  if(!wrap)return;
+  const fd=ffOverviewData();
+  if(!fd){wrap.innerHTML='';return;}
+  const pct=fd.budget>0?Math.min(100,Math.round((fd.spent/fd.budget)*100)):0;
+  const fillColor=pct>90?'var(--red)':pct>70?'var(--amber)':'var(--green)';
+  wrap.innerHTML=`<div class="ov-food-strip" style="margin-bottom:16px">
+    <div class="ov-food-title"><i class="fa-solid fa-basket-shopping"></i> Фонд еды — активный период</div>
+    <div class="ov-food-row"><span class="label">Бюджет</span><span class="val">${fmt(fd.budget)}${fd.rollover?` <span style="font-size:11px;color:var(--green);font-weight:600">(+${fmt(fd.rollover)} перенос)</span>`:''}</span></div>
+    <div class="ov-food-row"><span class="label">Потрачено</span><span class="val" style="color:${pct>90?'var(--red)':'var(--text)'}">${fmt(fd.spent)}</span></div>
+    <div class="ov-food-row"><span class="label">Остаток</span><span class="val" style="color:${fd.remainder>=0?'var(--green)':'var(--red)'};">${fmt(fd.remainder)}</span></div>
+    <div class="prog-bar" style="height:8px;margin-top:8px"><div class="prog-fill" style="width:${pct}%;background:${fillColor}"></div></div>
+  </div>`;
+}
+
 function renderOverview(){
   const inc=S.incomes.filter(i=>inMonth(i.date));
   const exp=S.expenses.filter(e=>inMonth(e.date));
@@ -994,16 +1280,19 @@ function renderOverview(){
   const totalUnpaidPl=plans.filter(p=>!isPaid(p.id)).reduce((s,p)=>s+(p.amount||0),0);
   const totalPfMonthly=(S.petFunds||[]).reduce((s,pf)=>s+(pf.monthlyAmount||0),0);
   const totalAll=totalExp+totalAExp;
-  const balance=totalInc-totalAll-totalUnpaidPl-totalPfMonthly;
+  const balance=totalInc-totalAll-totalUnpaidPl;
   const diana=inc.filter(i=>i.person==='diana').reduce((s,i)=>s+(i.amount||0),0);
   const kristina=inc.filter(i=>i.person==='kristina').reduce((s,i)=>s+(i.amount||0),0);
+  const fd=ffOverviewData();
 
   document.getElementById('kpi-row').innerHTML=`
     <div class="kpi-card c-green"><div class="kpi-label">Доходы</div><div class="kpi-val">${fmt(totalInc)}</div><div class="kpi-sub">Диана + Кристина</div></div>
     <div class="kpi-card c-red"><div class="kpi-label">Расходы факт</div><div class="kpi-val">${fmt(totalAll)}</div><div class="kpi-sub">Все категории</div></div>
     <div class="kpi-card c-purple"><div class="kpi-label">Не оплачено</div><div class="kpi-val">${fmt(totalUnpaidPl)}</div><div class="kpi-sub">Плановые платежи</div></div>
-    <div class="kpi-card ${balance>=0?'c-blue':'c-red'}"><div class="kpi-label">Свободно</div><div class="kpi-val">${fmt(balance)}</div><div class="kpi-sub">${balance>=0?'После всех платежей':'Перерасход'}</div></div>`;
+    ${fd?`<div class="kpi-card ${fd.remainder>=0?'c-orange':'c-red'}"><div class="kpi-label">Фонд еды</div><div class="kpi-val">${fmt(fd.remainder)}</div><div class="kpi-sub">Остаток периода</div></div>`
+      :`<div class="kpi-card ${balance>=0?'c-blue':'c-red'}"><div class="kpi-label">Свободно</div><div class="kpi-val">${fmt(balance)}</div><div class="kpi-sub">${balance>=0?'После всех платежей':'Перерасход'}</div></div>`}`;
 
+  renderOverviewFoodStrip();
   renderOverviewStrip();
   renderOverviewSavings();
 
@@ -1013,6 +1302,7 @@ function renderOverview(){
     <div class="sum-row"><span class="sl">Кристина</span><span class="sr">${fmt(kristina)}</span></div>
     <div class="sum-row"><span class="sl">Расходы (факт)</span><span class="sr">${fmt(totalAll)}</span></div>
     <div class="sum-row"><span class="sl">Фонд животных</span><span class="sr" style="color:var(--amber)">${fmt(totalPfMonthly)}/мес</span></div>
+    ${fd?`<div class="sum-row"><span class="sl">Фонд еды — остаток</span><span class="sr" style="color:${fd.remainder>=0?'var(--green)':'var(--red)'}">${fmt(fd.remainder)}</span></div>`:''}
     <div class="sum-row"><span class="sl">Планы оплачено</span><span class="sr">${fmt(totalPaidPl)}</span></div>
     <div class="sum-row"><span class="sl">Планы ещё нужно</span><span class="sr" style="color:var(--red)">${fmt(totalUnpaidPl)}</span></div>
     <hr class="sum-divider">
@@ -1093,17 +1383,20 @@ function renderPlanned(){
   if(!plans.length){document.getElementById('planned-grid').innerHTML=`<div style="grid-column:1/-1">${emptyState('fa-calendar-check','Нет плановых расходов — добавьте аренду, коммуналку, страховку...')}</div>`;return;}
   document.getElementById('planned-grid').innerHTML=plans.map(p=>{
     const pd=isPaid(p.id);
-    const piggyTag=p.savingId?'<span class="monthly-badge" style="margin-left:6px"><i class="fa-solid fa-piggy-bank"></i> копилка</span>':'';
+    const isPf=p.isPetFund;
+    const isLinkSv=p.savingId;
+    const tag=isPf?`<span class="monthly-badge" style="margin-left:6px;background:var(--amber-bg);color:var(--amber)"><i class="fa-solid fa-paw"></i> фонд</span>`
+      :isLinkSv?`<span class="monthly-badge" style="margin-left:6px"><i class="fa-solid fa-piggy-bank"></i> копилка</span>`:'' ;
     return`<div class="plan-card ${pd?'paid':'unpaid'}">
       <div class="plan-card-top">
-        <div><div class="plan-card-name">${esc(p.name)}${piggyTag}</div><div class="plan-card-meta">${p.dueDay?p.dueDay+'-е число · ':''}${PAY_LABEL[p.pay]||''}</div></div>
+        <div><div class="plan-card-name">${esc(p.name)}${tag}</div><div class="plan-card-meta">${p.dueDay?p.dueDay+'-е число · ':''}${PAY_LABEL[p.pay]||''}</div></div>
         <button class="paid-check-btn ${pd?'paid':'unpaid'}" onclick="togglePaid(${p.id})"><i class="fa-solid ${pd?'fa-check':'fa-xmark'}"></i></button>
       </div>
       <div class="plan-card-amount" style="color:${p.color||'var(--accent)'}">${fmt(p.amount)}</div>
       ${p.comment?`<div style="font-size:11px;color:var(--text3);margin-top:4px">${esc(p.comment)}</div>`:''}
       <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
         <button class="plan-status-btn ${pd?'paid':'unpaid'}" onclick="togglePaid(${p.id})">${pd?'✓ Оплачено':'Не оплачено'}</button>
-        <button class="del-btn" onclick="del('plannedExpenses',${p.id})"><i class="fa-solid fa-trash"></i></button>
+        ${isPf?`<span style="font-size:10px;color:var(--amber)"><i class="fa-solid fa-lock"></i> авто</span>`:`<button class="del-btn" onclick="del('plannedExpenses',${p.id})"><i class="fa-solid fa-trash"></i></button>`}
       </div>
     </div>`;
   }).join('');
@@ -1224,7 +1517,7 @@ const FORMS={
   petfund:()=>`
     <div style="background:var(--amber-bg);border:1px solid #f0d9a0;border-radius:var(--r-md);padding:10px 14px;margin-bottom:16px;font-size:12px;color:var(--amber);font-weight:600;line-height:1.5">
       <i class="fa-solid fa-circle-info" style="margin-right:5px"></i>
-      Укажите цикл в днях и ежемесячный взнос — приложение само посчитает, когда накопится нужная сумма
+      Ежемесячный взнос автоматически появится в плановых расходах и будет виден на главном экране
     </div>
     <div class="fg2">
       <div class="field"><label>Название</label><input type="text" id="m-name" placeholder="Корм для собак, наполнитель..." autofocus></div>
@@ -1245,7 +1538,6 @@ const FORMS={
       <div class="field">
         <label>Стоимость одной закупки (€)</label>
         <input type="number" id="m-cost" placeholder="120" min="0" step="1" oninput="pfNewCalcPreview()">
-        <div style="font-size:11px;color:var(--text3);margin-top:3px">Оставьте 0 если не знаете</div>
       </div>
       <div class="field">
         <label>Уже отложено (€)</label>
@@ -1254,11 +1546,75 @@ const FORMS={
     </div>
     <div class="field" style="margin-bottom:12px">
       <label>Дата последней покупки (если была)</label>
-      <input type="date" id="m-lastdate" value="">
+      <input type="date" id="m-lastdate">
     </div>
-    <div id="pf-new-preview" style="display:none;border-radius:var(--r-md);padding:10px 14px;font-size:12px;font-weight:600;line-height:1.6"></div>
-  `,
+    <div id="pf-new-preview" style="display:none;border-radius:var(--r-md);padding:10px 14px;font-size:12px;font-weight:600;line-height:1.6"></div>`,
+
+  foodperiod:()=>`
+    <div style="background:var(--orange-bg);border:1px solid #f0d9a0;border-radius:var(--r-md);padding:10px 14px;margin-bottom:16px;font-size:12px;color:var(--orange);font-weight:600;line-height:1.5">
+      <i class="fa-solid fa-basket-shopping" style="margin-right:5px"></i>
+      Расходы категории «Еда» за выбранный период будут автоматически учтены в фонде
+    </div>
+    <div class="fg2">
+      <div class="field">
+        <label>Тип периода</label>
+        <select id="m-period-type" onchange="ffUpdateEndDate()">
+          <option value="week">Неделя (7 дней)</option>
+          <option value="biweek">2 недели (14 дней)</option>
+          <option value="month">Месяц</option>
+          <option value="custom">Свой период</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Бюджет на период (€)</label>
+        <input type="number" id="m-budget" placeholder="300" min="1" step="1" autofocus oninput="ffPreview()">
+      </div>
+    </div>
+    <div class="fg2">
+      <div class="field">
+        <label>Дата начала</label>
+        <input type="date" id="m-start" value="${todayStr()}" oninput="ffUpdateEndDate()">
+      </div>
+      <div class="field" id="m-end-field">
+        <label>Дата конца</label>
+        <input type="date" id="m-end" value="${addDays(todayStr(),6)}" oninput="ffPreview()">
+      </div>
+    </div>
+    <div class="field" style="margin-bottom:12px">
+      <label>Заметка (необязательно)</label>
+      <input type="text" id="m-note" placeholder="Неделя 1, январь...">
+    </div>
+    <div id="ff-form-preview" style="display:none;border-radius:var(--r-md);padding:10px 14px;font-size:12px;font-weight:600;background:var(--accent-bg);border:1px solid #c4d5fa;color:var(--accent-dark);line-height:1.6"></div>`,
 };
+
+function ffUpdateEndDate(){
+  const type=document.getElementById('m-period-type')?.value;
+  const start=document.getElementById('m-start')?.value||todayStr();
+  const endField=document.getElementById('m-end');
+  const endWrap=document.getElementById('m-end-field');
+  if(!endField)return;
+  if(type==='week'){endField.value=addDays(start,6);endWrap.style.opacity='.5';}
+  else if(type==='biweek'){endField.value=addDays(start,13);endWrap.style.opacity='.5';}
+  else if(type==='month'){const d=new Date(start);d.setMonth(d.getMonth()+1);d.setDate(d.getDate()-1);endField.value=d.toISOString().slice(0,10);endWrap.style.opacity='.5';}
+  else{endWrap.style.opacity='1';}
+  ffPreview();
+}
+
+function ffPreview(){
+  const budget=parseFloat(document.getElementById('m-budget')?.value)||0;
+  const start=document.getElementById('m-start')?.value||todayStr();
+  const end=document.getElementById('m-end')?.value||start;
+  const prev=document.getElementById('ff-form-preview');
+  if(!prev)return;
+  if(budget>0&&start&&end){
+    const days=daysBetween(start,end)+1;
+    const perDay=(budget/days).toFixed(2);
+    prev.style.display='';
+    prev.innerHTML=`<i class="fa-solid fa-circle-check" style="margin-right:5px;color:var(--green)"></i>Период: ${days} дн. (${fmtDate(start)} — ${fmtDate(end)}) · <b>${fmt(budget)}</b> · ${perDay} €/день`;
+  } else {
+    prev.style.display='none';
+  }
+}
 
 function pfNewCalcPreview(){
   const monthly=parseFloat(document.getElementById('m-monthly')?.value)||0;
@@ -1292,7 +1648,7 @@ let monthlyModeOn=false;
 function toggleMonthlyMode(){monthlyModeOn=!monthlyModeOn;document.getElementById('monthly-toggle-sw').className='toggle-switch'+(monthlyModeOn?' on':'');document.getElementById('monthly-amount-field').style.display=monthlyModeOn?'block':'none';if(monthlyModeOn)setTimeout(()=>document.getElementById('m-monthly').focus(),50);}
 function updateMonthlyPreview(){const amt=parseFloat(document.getElementById('m-monthly').value)||0;const goal=parseFloat(document.getElementById('m-goal')?.value)||0;const current=parseFloat(document.getElementById('m-current')?.value)||0;const prev=document.getElementById('monthly-preview');if(amt>0&&goal>0){const months=Math.ceil((goal-current)/amt);prev.textContent=`≈ ${months} мес. до цели`;}else prev.textContent='';}
 
-const MODAL_TITLES={income:'Добавить доход',expense:'Добавить расход',planned:'Плановый расход',animal:'Расход на питомца',reminder:'Напоминание',grocery:'Добавить продукт',receipt:'Добавить чек',saving:'Новая копилка',petfund:'Новая статья фонда животных'};
+const MODAL_TITLES={income:'Добавить доход',expense:'Добавить расход',planned:'Плановый расход',animal:'Расход на питомца',reminder:'Напоминание',grocery:'Добавить продукт',receipt:'Добавить чек',saving:'Новая копилка',petfund:'Новая статья фонда животных',foodperiod:'Новый период — Фонд еды'};
 let activeModal=null;
 monthlyModeOn=false;
 
@@ -1305,6 +1661,8 @@ function openModal(type){
   document.getElementById('modal-body').innerHTML=(FORMS[type]||(() =>''))();
   document.getElementById('modal-confirm-btn').textContent='Сохранить';
   document.getElementById('modal-overlay').classList.add('open');
+  // Init food period end date
+  if(type==='foodperiod')setTimeout(ffUpdateEndDate,50);
 }
 function closeModal(){document.getElementById('modal-overlay').classList.remove('open');activeModal=null;pfBoughtTarget=null;pfEditTarget=null;}
 function overlayClick(e){if(e.target===document.getElementById('modal-overlay'))closeModal();}
@@ -1313,24 +1671,23 @@ function gv(id){const el=document.getElementById(id);return el?el.value.trim():'
 function confirmModal(){
   const id=nextId();
 
+  // ── PET FUND BOUGHT ──
   if(activeModal==='pfbought'){
-    // Record a purchase from the pet fund
     const pf=(S.petFunds||[]).find(p=>p.id===pfBoughtTarget);
     if(!pf)return;
     const spend=parseFloat(gv('pf-spend'))||pf.totalCost||0;
     const date=gv('pf-date')||todayStr();
     const comment=gv('pf-comment');
-    // Deduct from fund
     pf.currentSaved=Math.max(0,(pf.currentSaved||0)-spend);
     pf.lastPurchaseDate=date;
     if(!pf.purchaseHistory)pf.purchaseHistory=[];
     pf.purchaseHistory.unshift({date,amount:spend,comment});
-    // Also log in animal expenses
     S.animalExpenses.push({id,cat:pf.name,amount:spend,comment:comment||`Закупка: ${pf.name}`,pay:'card',date});
     save();closeModal();renderAnimals();toast('Покупка записана! 🛒');
     return;
   }
 
+  // ── PET FUND EDIT ──
   if(activeModal==='pfedit'){
     const pf=(S.petFunds||[]).find(p=>p.id===pfEditTarget);
     if(!pf)return;
@@ -1341,10 +1698,29 @@ function confirmModal(){
     pf.totalCost=parseFloat(gv('pfe-cost'))||0;
     pf.currentSaved=parseFloat(gv('pfe-saved'))||0;
     pf.lastPurchaseDate=gv('pfe-lastdate')||pf.lastPurchaseDate||null;
+    pfSyncPlan(pf); // sync planned expense
     save();closeModal();renderAnimals();toast('Настройки сохранены');
     return;
   }
 
+  // ── FOOD PERIOD ──
+  if(activeModal==='foodperiod'){
+    const budget=parseFloat(gv('m-budget'));
+    if(!budget||budget<=0){shake();return;}
+    const start=gv('m-start')||todayStr();
+    const type=gv('m-period-type')||'week';
+    let end=gv('m-end')||addDays(start,6);
+    if(type==='week')end=addDays(start,6);
+    else if(type==='biweek')end=addDays(start,13);
+    else if(type==='month'){const d=new Date(start);d.setMonth(d.getMonth()+1);d.setDate(d.getDate()-1);end=d.toISOString().slice(0,10);}
+    if(!S.foodFund)S.foodFund={periods:[],activePeriodId:null};
+    S.foodFund.periods.push({id,periodType:type,budget,rollover:0,startDate:start,endDate:end,note:gv('m-note')||''});
+    S.foodFund.activePeriodId=id;
+    save();closeModal();renderTab(currentTab);toast('Период создан! 🍽');
+    return;
+  }
+
+  // ── STANDARD MODALS ──
   if(activeModal==='income'){if(!gv('m-amount')||+gv('m-amount')<=0){shake();return;}S.incomes.push({id,person:gv('m-person'),amount:+gv('m-amount'),type:gv('m-type'),week:gv('m-week')?+gv('m-week'):null,comment:gv('m-comment'),pay:gv('m-pay'),date:gv('m-date')});}
   else if(activeModal==='expense'){if(!gv('m-name')||!gv('m-amount')||+gv('m-amount')<=0){shake();return;}S.expenses.push({id,name:gv('m-name'),cat:gv('m-cat'),amount:+gv('m-amount'),comment:gv('m-comment'),pay:gv('m-pay'),person:gv('m-person'),date:gv('m-date')});}
   else if(activeModal==='planned'){if(!gv('m-name')||!gv('m-amount')||+gv('m-amount')<=0){shake();return;}S.plannedExpenses=S.plannedExpenses||[];S.plannedExpenses.push({id,name:gv('m-name'),amount:+gv('m-amount'),dueDay:gv('m-day')?+gv('m-day'):null,pay:gv('m-pay'),comment:gv('m-comment'),color:PLAN_COLORS[(S.plannedExpenses.length)%PLAN_COLORS.length]});}
@@ -1367,7 +1743,7 @@ function confirmModal(){
     if(!gv('m-name')){shake();return;}
     if(!S.petFunds)S.petFunds=[];
     const col=PF_COLORS[S.petFunds.length%PF_COLORS.length];
-    S.petFunds.push({
+    const newPf={
       id,
       name:gv('m-name'),
       emoji:gv('m-emoji')||'🐾',
@@ -1378,7 +1754,10 @@ function confirmModal(){
       currentSaved:parseFloat(gv('m-saved'))||0,
       lastPurchaseDate:gv('m-lastdate')||null,
       purchaseHistory:[],
-    });
+      linkedPlanId:null,
+    };
+    S.petFunds.push(newPf);
+    pfSyncPlan(newPf); // auto-create planned expense
   }
 
   save();closeModal();renderTab(currentTab);toast('Сохранено ☁️');
@@ -1387,7 +1766,7 @@ function confirmModal(){
 function shake(){const box=document.querySelector('.modal-box');box.style.animation='none';setTimeout(()=>{box.style.animation='shake .3s ease';},10);}
 
 function exportData(){const blob=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`budget-backup-${todayStr()}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),5000);toast('Файл скачан');}
-function importData(e){const file=e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=ev=>{try{const data=JSON.parse(ev.target.result);if(data&&typeof data==='object'){Object.assign(S,data);if(!S.petFunds)S.petFunds=[];save();renderTab(currentTab);toast('Данные загружены!');}}catch(err){alert('Ошибка чтения файла.');}};reader.readAsText(file);e.target.value='';}
+function importData(e){const file=e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=ev=>{try{const data=JSON.parse(ev.target.result);if(data&&typeof data==='object'){Object.assign(S,data);if(!S.petFunds)S.petFunds=[];if(!S.foodFund)S.foodFund={periods:[],activePeriodId:null};save();renderTab(currentTab);toast('Данные загружены!');}}catch(err){alert('Ошибка чтения файла.');}};reader.readAsText(file);e.target.value='';}
 
 let toastTimer=null;
 function toast(msg){const el=document.getElementById('toast');document.getElementById('toast-msg').textContent=msg;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),2400);}
