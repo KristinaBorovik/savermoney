@@ -1,0 +1,1395 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Бюджет — Диана и Кристина</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+/* ─── RESET & ROOT ─────────────────────────────────────────── */
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#F0EEE9;
+  --surface:#FFFFFF;
+  --surface2:#F7F5F2;
+  --surface3:#EDEAE5;
+  --border:#E2DED8;
+  --border2:#D0CBc3;
+
+  --text:#1C1B19;
+  --text2:#6B6760;
+  --text3:#A09C97;
+
+  --accent:#3B6EF0;
+  --accent-bg:#EBF0FF;
+  --accent-dark:#2755CC;
+
+  --green:#1E8040;
+  --green-bg:#E8F5EE;
+  --red:#C0392B;
+  --red-bg:#FDECEA;
+  --amber:#A06010;
+  --amber-bg:#FEF3DC;
+  --purple:#5B3DB5;
+  --purple-bg:#EEE9FF;
+  --rose:#B03070;
+  --rose-bg:#FDEAF3;
+  --teal:#1A7A62;
+  --teal-bg:#E4F5F0;
+
+  --r-sm:8px;--r-md:12px;--r-lg:16px;--r-xl:20px;
+  --shadow-sm:0 1px 2px rgba(0,0,0,.06);
+  --shadow:0 2px 8px rgba(0,0,0,.08),0 0 0 1px rgba(0,0,0,.04);
+  --shadow-lg:0 8px 32px rgba(0,0,0,.14),0 0 0 1px rgba(0,0,0,.04);
+}
+
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;-webkit-font-smoothing:antialiased}
+
+/* ─── LAYOUT ───────────────────────────────────────────────── */
+.app{display:flex;min-height:100vh}
+.sidebar{width:232px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:50;overflow:hidden}
+.main-area{margin-left:232px;flex:1;display:flex;flex-direction:column;min-height:100vh}
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:40;gap:12px}
+.content{padding:24px;max-width:960px;width:100%}
+
+/* ─── SIDEBAR ──────────────────────────────────────────────── */
+.sb-head{padding:22px 18px 16px;border-bottom:1px solid var(--border)}
+.sb-logo{display:flex;align-items:center;gap:10px}
+.sb-logo-icon{width:34px;height:34px;background:var(--accent);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;flex-shrink:0}
+.sb-logo-text{font-size:14px;font-weight:700;color:var(--text);line-height:1.2}
+.sb-logo-sub{font-size:11px;color:var(--text3);font-weight:400;margin-top:1px}
+
+.sb-nav{flex:1;overflow-y:auto;padding:10px 10px}
+.sb-section-label{font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;padding:10px 8px 4px}
+.sb-btn{display:flex;align-items:center;gap:9px;width:100%;padding:8px 10px;border:none;background:none;cursor:pointer;font-size:13px;font-weight:500;color:var(--text2);border-radius:var(--r-sm);text-align:left;transition:all .15s;line-height:1}
+.sb-btn i{width:15px;text-align:center;font-size:13px;opacity:.8}
+.sb-btn:hover{background:var(--surface2);color:var(--text)}
+.sb-btn.active{background:var(--accent-bg);color:var(--accent-dark);font-weight:600}
+.sb-btn.active i{opacity:1}
+
+.sb-month{padding:12px 14px;border-top:1px solid var(--border)}
+.month-row{display:flex;align-items:center;gap:6px}
+.month-row span{flex:1;text-align:center;font-size:13px;font-weight:600;color:var(--text)}
+.month-row button{width:28px;height:28px;display:flex;align-items:center;justify-content:center;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);cursor:pointer;color:var(--text2);font-size:11px;transition:all .12s}
+.month-row button:hover{background:var(--surface3);border-color:var(--border2);color:var(--text)}
+
+/* ─── TOPBAR ───────────────────────────────────────────────── */
+.topbar-left{display:flex;align-items:center;gap:12px}
+.topbar-title{font-size:16px;font-weight:700;color:var(--text)}
+.topbar-right{display:flex;align-items:center;gap:8px}
+
+/* ─── BUTTONS ──────────────────────────────────────────────── */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:var(--r-sm);font-size:13px;font-weight:500;cursor:pointer;border:none;font-family:inherit;transition:all .15s;white-space:nowrap}
+.btn-primary{background:var(--accent);color:#fff;box-shadow:0 1px 3px rgba(59,110,240,.3)}
+.btn-primary:hover{background:var(--accent-dark);box-shadow:0 2px 6px rgba(59,110,240,.35)}
+.btn-ghost{background:none;border:1px solid var(--border2);color:var(--text2)}
+.btn-ghost:hover{background:var(--surface2);border-color:var(--border2);color:var(--text)}
+.btn-sm{padding:6px 11px;font-size:12px}
+.btn-icon{width:32px;height:32px;padding:0;justify-content:center;border-radius:var(--r-sm)}
+
+/* ─── TABS ─────────────────────────────────────────────────── */
+.tab-page{display:none}.tab-page.active{display:block}
+
+/* ─── CARDS ────────────────────────────────────────────────── */
+.card{background:var(--surface);border-radius:var(--r-xl);box-shadow:var(--shadow);padding:22px;margin-bottom:16px;border:1px solid var(--border)}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.card-title{font-size:14px;font-weight:700;color:var(--text)}
+.card-sub{font-size:12px;color:var(--text3);font-weight:400;margin-top:1px}
+
+/* ─── KPI GRID ─────────────────────────────────────────────── */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+.kpi-card{background:var(--surface);border-radius:var(--r-lg);box-shadow:var(--shadow);padding:18px 20px;border:1px solid var(--border);position:relative;overflow:hidden}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--r-lg) var(--r-lg) 0 0}
+.kpi-card.c-green::before{background:var(--green)}
+.kpi-card.c-red::before{background:var(--red)}
+.kpi-card.c-blue::before{background:var(--accent)}
+.kpi-card.c-amber::before{background:var(--amber)}
+.kpi-label{font-size:11px;font-weight:600;color:var(--text3);letter-spacing:.04em;text-transform:uppercase;margin-bottom:8px}
+.kpi-val{font-size:26px;font-weight:700;letter-spacing:-.5px;line-height:1}
+.kpi-card.c-green .kpi-val{color:var(--green)}
+.kpi-card.c-red .kpi-val{color:var(--red)}
+.kpi-card.c-blue .kpi-val{color:var(--accent-dark)}
+.kpi-card.c-amber .kpi-val{color:var(--amber)}
+.kpi-sub{font-size:11px;color:var(--text3);margin-top:5px}
+
+/* ─── SUMMARY BOX ──────────────────────────────────────────── */
+.summary-box{background:var(--accent-bg);border:1px solid #c4d5fa;border-radius:var(--r-lg);padding:18px 20px;margin-bottom:16px}
+.summary-box-title{font-size:12px;font-weight:700;color:var(--accent-dark);margin-bottom:12px;text-transform:uppercase;letter-spacing:.04em}
+.sum-row{display:flex;justify-content:space-between;align-items:center;font-size:13px;padding:4px 0}
+.sum-row .sl{color:var(--text2)}
+.sum-row .sr{font-weight:600;color:var(--text)}
+.sum-divider{border:none;border-top:1px solid #c4d5fa;margin:8px 0}
+.sum-total .sl{font-weight:700;color:var(--text)}
+.sum-total .sr{font-size:16px;font-weight:700}
+
+/* ─── WEEK CARDS ───────────────────────────────────────────── */
+.week-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:4px}
+.wk-card{background:var(--surface2);border-radius:var(--r-md);padding:14px 12px;text-align:center;border:1px solid var(--border)}
+.wk-label{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+.wk-val{font-size:17px;font-weight:700;letter-spacing:-.3px}
+.wk-sub{font-size:10px;color:var(--text3);margin-top:4px}
+
+/* ─── ROW ITEMS ────────────────────────────────────────────── */
+.row-list{display:flex;flex-direction:column;gap:6px}
+.row-item{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--surface2);border-radius:var(--r-md);border:1px solid transparent;transition:all .15s;cursor:default}
+.row-item:hover{background:var(--surface3);border-color:var(--border)}
+.row-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.row-icon-emoji{font-size:20px;flex-shrink:0;width:28px;text-align:center;line-height:1}
+.row-body{flex:1;min-width:0}
+.row-name{font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row-meta{font-size:11px;color:var(--text3);margin-top:2px;display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.row-right{text-align:right;flex-shrink:0}
+.row-amount{font-size:14px;font-weight:700;color:var(--text)}
+.row-amount.pos{color:var(--green)}
+.row-pay-badge{margin-top:3px}
+.del-btn{width:28px;height:28px;display:flex;align-items:center;justify-content:center;border:none;background:none;cursor:pointer;color:var(--text3);border-radius:var(--r-sm);font-size:12px;flex-shrink:0;transition:all .12s}
+.del-btn:hover{background:var(--red-bg);color:var(--red)}
+
+/* ─── EMPTY STATE ──────────────────────────────────────────── */
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 24px;text-align:center}
+.empty-state i{font-size:36px;color:var(--border2);margin-bottom:12px}
+.empty-state p{font-size:13px;color:var(--text3);max-width:220px;line-height:1.5}
+
+/* ─── BADGES ───────────────────────────────────────────────── */
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:.02em}
+.badge-card{background:var(--accent-bg);color:var(--accent-dark)}
+.badge-cash{background:var(--green-bg);color:var(--green)}
+.badge-crypto{background:var(--purple-bg);color:var(--purple)}
+.badge-diana{background:var(--rose-bg);color:var(--rose)}
+.badge-kristina{background:var(--purple-bg);color:var(--purple)}
+.badge-both{background:var(--surface3);color:var(--text2)}
+.badge-cat{background:var(--surface3);color:var(--text2)}
+
+/* ─── PERSON FILTER TABS ───────────────────────────────────── */
+.ptabs{display:flex;gap:6px;margin-bottom:16px}
+.ptab{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid var(--border2);background:none;color:var(--text2);transition:all .12s;font-family:inherit}
+.ptab:hover{background:var(--surface2)}
+.ptab.active{background:var(--accent);border-color:var(--accent);color:#fff}
+
+/* ─── CAT CHIPS ────────────────────────────────────────────── */
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.chip{padding:5px 12px;border-radius:20px;font-size:11px;font-weight:700;cursor:pointer;border:1.5px solid;transition:all .12s;font-family:inherit;letter-spacing:.02em}
+.chip.inactive{opacity:.35}
+.chip.inactive:hover{opacity:.6}
+
+/* ─── PROGRESS BAR ─────────────────────────────────────────── */
+.prog-bar{height:7px;background:var(--surface3);border-radius:4px;overflow:hidden;margin:6px 0}
+.prog-fill{height:100%;border-radius:4px;transition:width .5s cubic-bezier(.4,0,.2,1)}
+
+/* ─── PIGGY GRID ───────────────────────────────────────────── */
+.piggy-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.piggy-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px;position:relative;overflow:hidden}
+.piggy-accent{position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--r-lg) var(--r-lg) 0 0}
+.piggy-name{font-size:14px;font-weight:700;margin-bottom:2px;margin-top:4px}
+.piggy-goal{font-size:11px;color:var(--text3);margin-bottom:8px}
+.piggy-amounts{display:flex;justify-content:space-between;font-size:11px;color:var(--text3);margin-bottom:3px}
+.piggy-pct{font-size:11px;color:var(--text3);margin-bottom:10px}
+.piggy-actions{display:flex;gap:6px}
+.piggy-btn{flex:1;padding:7px 0;border-radius:var(--r-sm);border:1px solid var(--border2);font-size:12px;cursor:pointer;background:var(--surface);color:var(--text2);font-weight:600;font-family:inherit;transition:all .12s}
+.piggy-btn:hover{background:var(--accent-bg);border-color:var(--accent);color:var(--accent-dark)}
+.piggy-del{width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:var(--r-sm);border:1px solid #f0c0c0;font-size:12px;cursor:pointer;background:none;color:var(--red);transition:all .12s}
+.piggy-del:hover{background:var(--red-bg)}
+
+/* ─── BALANCE CARDS ────────────────────────────────────────── */
+.balance-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:12px}
+.bal-card{border-radius:var(--r-lg);padding:18px 20px;border:1px solid transparent;position:relative}
+.bal-card.bc-blue{background:var(--accent-bg);border-color:#c4d5fa}
+.bal-card.bc-green{background:var(--green-bg);border-color:#b8e0c8}
+.bal-card.bc-purple{background:var(--purple-bg);border-color:#ccc4f0}
+.bal-card.bc-total{background:var(--text);color:#fff}
+.bal-label{font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;opacity:.65;margin-bottom:8px;display:flex;align-items:center;gap:5px}
+.bal-input{border:none;background:transparent;font-size:24px;font-weight:700;width:100%;color:inherit;padding:0;font-family:inherit;letter-spacing:-.5px}
+.bal-input:focus{outline:none}
+.bal-currency{font-size:12px;opacity:.5;margin-top:2px}
+.bal-total-val{font-size:24px;font-weight:700;letter-spacing:-.5px;color:#fff}
+.bal-total-sub{font-size:11px;opacity:.5;margin-top:4px}
+
+/* ─── GROCERY LIST ─────────────────────────────────────────── */
+.grocery-list{display:flex;flex-direction:column;gap:6px}
+.groc-item{display:flex;align-items:center;gap:11px;padding:11px 14px;background:var(--surface2);border-radius:var(--r-md);border:1px solid transparent;transition:all .12s}
+.groc-item:hover{border-color:var(--border)}
+.groc-item.done-item{opacity:.45}
+.groc-item.done-item .groc-name{text-decoration:line-through;color:var(--text3)}
+.groc-cb{width:17px;height:17px;cursor:pointer;accent-color:var(--accent);flex-shrink:0}
+.groc-name{flex:1;font-size:13px;font-weight:500}
+.groc-qty{font-size:11px;color:var(--text3);min-width:50px}
+.groc-price{font-size:12px;font-weight:700;color:var(--text2);min-width:58px;text-align:right}
+
+/* ─── ANIMALS ──────────────────────────────────────────────── */
+.animal-total-box{background:linear-gradient(135deg,var(--amber-bg) 0%,#fff8ee 100%);border:1px solid #f0d9a0;border-radius:var(--r-lg);padding:18px 22px;display:flex;align-items:center;gap:16px;margin-bottom:20px}
+.animal-total-icon{font-size:40px;line-height:1;flex-shrink:0}
+.animal-total-label{font-size:12px;font-weight:700;color:var(--amber);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px}
+.animal-total-val{font-size:28px;font-weight:700;color:var(--text);letter-spacing:-.5px}
+.animal-total-sub{font-size:12px;color:var(--text3);margin-top:3px}
+
+/* ─── MODAL ────────────────────────────────────────────────── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(28,27,25,.5);z-index:200;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
+.modal-overlay.open{display:flex}
+.modal-box{background:var(--surface);border-radius:var(--r-xl);padding:28px;width:min(520px,100%);max-height:90vh;overflow-y:auto;box-shadow:var(--shadow-lg)}
+.modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px}
+.modal-title{font-size:17px;font-weight:700;color:var(--text)}
+.modal-close{width:30px;height:30px;display:flex;align-items:center;justify-content:center;border:none;background:var(--surface2);cursor:pointer;border-radius:50%;color:var(--text2);font-size:13px;transition:all .12s}
+.modal-close:hover{background:var(--surface3);color:var(--text)}
+.modal-footer{display:flex;gap:8px;justify-content:flex-end;margin-top:22px;padding-top:18px;border-top:1px solid var(--border)}
+
+/* ─── FORM FIELDS ──────────────────────────────────────────── */
+.fg2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.fg3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px}
+.fg1{margin-bottom:12px}
+.field{display:flex;flex-direction:column;gap:5px}
+.field label{font-size:11px;font-weight:700;color:var(--text2);letter-spacing:.02em}
+.field input,.field select,.field textarea{padding:10px 13px;border:1.5px solid var(--border2);border-radius:var(--r-md);font-size:13px;color:var(--text);background:var(--surface);font-family:inherit;transition:border-color .12s,box-shadow .12s;-webkit-appearance:none}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(59,110,240,.12)}
+.field textarea{resize:none;height:64px}
+.field select{background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B6760' stroke-width='2'%3e%3cpath d='M6 9l6 6 6-6'/%3e%3c/svg%3e");background-repeat:no-repeat;background-position:right 12px center;padding-right:36px}
+
+/* ─── TOAST ────────────────────────────────────────────────── */
+.toast{position:fixed;bottom:28px;right:28px;background:var(--text);color:#fff;padding:12px 20px;border-radius:var(--r-md);font-size:13px;font-weight:600;z-index:500;transform:translateY(80px) scale(.95);opacity:0;transition:all .25s cubic-bezier(.34,1.56,.64,1);pointer-events:none;display:flex;align-items:center;gap:8px;box-shadow:0 8px 24px rgba(0,0,0,.2)}
+.toast.show{transform:translateY(0) scale(1);opacity:1}
+.toast i{color:#6EDE8A;font-size:14px}
+
+/* ─── CHART CONTAINER ──────────────────────────────────────── */
+.chart-box{position:relative;width:100%}
+
+/* ─── SECTION DIVIDER ──────────────────────────────────────── */
+.section-divider{border:none;border-top:1px solid var(--border);margin:18px 0}
+
+/* ─── REMINDER ITEM ────────────────────────────────────────── */
+.reminder-pill{font-size:11px;font-weight:700;padding:3px 8px;border-radius:20px}
+.reminder-soon{background:#fde8e8;color:var(--red)}
+.reminder-ok{background:var(--surface3);color:var(--text3)}
+.reminder-today{background:#fff3cd;color:#8a6200}
+
+/* ─── MOBILE ───────────────────────────────────────────────── */
+@media(max-width:680px){
+  .sidebar{width:100%;height:auto;position:sticky;top:0;flex-direction:row;overflow-x:auto;border-right:none;border-bottom:1px solid var(--border)}
+  .main-area{margin-left:0}
+  .sb-head,.sb-month,.sb-section-label{display:none}
+  .sb-nav{display:flex;flex-direction:row;padding:6px 8px;overflow-x:auto;gap:2px;scrollbar-width:none}
+  .sb-nav::-webkit-scrollbar{display:none}
+  .sb-btn span{display:none}
+  .sb-btn{padding:8px 11px;justify-content:center;gap:0}
+  .sb-btn i{width:auto;font-size:16px}
+  .topbar-title{font-size:14px}
+  .fg2,.fg3{grid-template-columns:1fr}
+  .week-grid{grid-template-columns:1fr 1fr}
+  .kpi-grid{grid-template-columns:1fr 1fr}
+  .balance-grid{grid-template-columns:1fr 1fr}
+  .content{padding:16px}
+  .btn-ghost.btn-sm span{display:none}
+}
+@media(max-width:420px){
+  .kpi-grid{grid-template-columns:1fr}
+  .balance-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+<!-- ═══════════ SIDEBAR ═══════════ -->
+<aside class="sidebar">
+  <div class="sb-head">
+    <div class="sb-logo">
+      <div class="sb-logo-icon"><i class="fa-solid fa-wallet"></i></div>
+      <div>
+        <div class="sb-logo-text">Наш Бюджет</div>
+        <div class="sb-logo-sub">Диана &amp; Кристина</div>
+      </div>
+    </div>
+  </div>
+
+  <nav class="sb-nav">
+    <div class="sb-section-label">Главное</div>
+    <button class="sb-btn active" onclick="showTab('overview',this)"><i class="fa-solid fa-chart-pie"></i><span>Обзор</span></button>
+    <button class="sb-btn" onclick="showTab('income',this)"><i class="fa-solid fa-arrow-trend-up"></i><span>Доходы</span></button>
+    <button class="sb-btn" onclick="showTab('expenses',this)"><i class="fa-solid fa-receipt"></i><span>Расходы</span></button>
+    <div class="sb-section-label">Разделы</div>
+    <button class="sb-btn" onclick="showTab('animals',this)"><i class="fa-solid fa-paw"></i><span>Животные</span></button>
+    <button class="sb-btn" onclick="showTab('reminders',this)"><i class="fa-solid fa-bell"></i><span>Напоминания</span></button>
+    <div class="sb-section-label">Списки</div>
+    <button class="sb-btn" onclick="showTab('grocery',this)"><i class="fa-solid fa-cart-shopping"></i><span>Продукты</span></button>
+    <button class="sb-btn" onclick="showTab('receipts',this)"><i class="fa-solid fa-file-invoice-dollar"></i><span>Чеки</span></button>
+    <button class="sb-btn" onclick="showTab('savings',this)"><i class="fa-solid fa-piggy-bank"></i><span>Копилки</span></button>
+  </nav>
+
+  <div class="sb-month">
+    <div class="month-row">
+      <button onclick="changeMonth(-1)" aria-label="Предыдущий месяц"><i class="fa-solid fa-chevron-left"></i></button>
+      <span id="month-label"></span>
+      <button onclick="changeMonth(1)" aria-label="Следующий месяц"><i class="fa-solid fa-chevron-right"></i></button>
+    </div>
+  </div>
+</aside>
+
+<!-- ═══════════ MAIN ═══════════ -->
+<div class="main-area">
+
+  <header class="topbar">
+    <div class="topbar-left">
+      <span class="topbar-title" id="page-title">Обзор</span>
+    </div>
+    <div class="topbar-right">
+      <button class="btn btn-ghost btn-sm" onclick="exportData()" title="Скачать резервную копию JSON">
+        <i class="fa-solid fa-download"></i><span> Экспорт</span>
+      </button>
+      <button class="btn btn-ghost btn-sm" onclick="document.getElementById('import-file').click()" title="Загрузить резервную копию">
+        <i class="fa-solid fa-upload"></i><span> Импорт</span>
+      </button>
+      <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)">
+      <button class="btn btn-primary btn-sm" onclick="openAdd()">
+        <i class="fa-solid fa-plus"></i> Добавить
+      </button>
+    </div>
+  </header>
+
+  <div class="content">
+
+    <!-- ── OVERVIEW ── -->
+    <div id="tab-overview" class="tab-page active">
+      <div class="kpi-grid" id="kpi-row"></div>
+      <div class="summary-box" id="summary-box"></div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">Расходы по неделям</span></div>
+        <div class="week-grid" id="ov-weeks"></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div class="card">
+          <div class="card-header"><span class="card-title">Категории</span></div>
+          <div class="chart-box" style="height:220px"><canvas id="cat-chart"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">Способ оплаты</span></div>
+          <div class="chart-box" style="height:220px"><canvas id="pay-chart"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── INCOME ── -->
+    <div id="tab-income" class="tab-page">
+      <div class="card">
+        <div class="card-header">
+          <div><span class="card-title">Доходы за месяц</span><div class="card-sub" id="income-total-sub"></div></div>
+        </div>
+        <div class="ptabs" id="income-ptabs">
+          <button class="ptab active" onclick="setPFilter(this,'all','income-ptabs')">Все</button>
+          <button class="ptab" onclick="setPFilter(this,'diana','income-ptabs')">Диана</button>
+          <button class="ptab" onclick="setPFilter(this,'kristina','income-ptabs')">Кристина</button>
+        </div>
+        <div class="row-list" id="income-list"></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">По неделям</span></div>
+        <div class="week-grid" id="income-weeks"></div>
+      </div>
+    </div>
+
+    <!-- ── EXPENSES ── -->
+    <div id="tab-expenses" class="tab-page">
+      <div class="card">
+        <div class="card-header">
+          <div><span class="card-title">Расходы</span><div class="card-sub" id="expenses-total-sub"></div></div>
+        </div>
+        <div class="chips" id="cat-chips"></div>
+        <div class="row-list" id="expense-list"></div>
+      </div>
+    </div>
+
+    <!-- ── ANIMALS ── -->
+    <div id="tab-animals" class="tab-page">
+      <div class="card">
+        <div class="card-header"><span class="card-title">Животные — общие расходы</span></div>
+        <div id="animal-summary"></div>
+        <hr class="section-divider">
+        <div class="card-title" style="margin-bottom:12px">История</div>
+        <div class="row-list" id="animal-list"></div>
+      </div>
+    </div>
+
+    <!-- ── REMINDERS ── -->
+    <div id="tab-reminders" class="tab-page">
+      <div class="card">
+        <div class="card-header"><span class="card-title">Регулярные платежи</span></div>
+        <div class="row-list" id="reminder-list"></div>
+      </div>
+    </div>
+
+    <!-- ── GROCERY ── -->
+    <div id="tab-grocery" class="tab-page">
+      <div class="card">
+        <div class="card-header"><span class="card-title">Список продуктов</span></div>
+        <div class="ptabs" id="groc-ptabs">
+          <button class="ptab active" onclick="setPFilter(this,'all','groc-ptabs');S.groceryFilter='all';save();renderGrocery()">Все</button>
+          <button class="ptab" onclick="setPFilter(this,'diana','groc-ptabs');S.groceryFilter='diana';save();renderGrocery()">Диана</button>
+          <button class="ptab" onclick="setPFilter(this,'kristina','groc-ptabs');S.groceryFilter='kristina';save();renderGrocery()">Кристина</button>
+        </div>
+        <div class="grocery-list" id="grocery-list"></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
+          <span style="font-size:13px;color:var(--text2)">Осталось купить:</span>
+          <span style="font-size:16px;font-weight:700" id="grocery-total">0 €</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── RECEIPTS ── -->
+    <div id="tab-receipts" class="tab-page">
+      <div class="card">
+        <div class="card-header">
+          <div><span class="card-title">Чеки</span><div class="card-sub">Ручной ввод</div></div>
+        </div>
+        <div class="row-list" id="receipt-list"></div>
+      </div>
+    </div>
+
+    <!-- ── SAVINGS ── -->
+    <div id="tab-savings" class="tab-page">
+      <div class="card">
+        <div class="card-header"><span class="card-title">Копилки</span></div>
+        <div class="piggy-grid" id="piggy-grid"></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">Кошельки</span></div>
+        <div class="balance-grid">
+          <div class="bal-card bc-blue">
+            <div class="bal-label"><i class="fa-solid fa-credit-card"></i> Карта</div>
+            <input class="bal-input" type="number" id="bal-card" placeholder="0" oninput="saveBalances()">
+            <div class="bal-currency">€</div>
+          </div>
+          <div class="bal-card bc-green">
+            <div class="bal-label"><i class="fa-solid fa-money-bill-wave"></i> Наличные</div>
+            <input class="bal-input" type="number" id="bal-cash" placeholder="0" oninput="saveBalances()">
+            <div class="bal-currency">€</div>
+          </div>
+          <div class="bal-card bc-purple">
+            <div class="bal-label"><i class="fa-brands fa-bitcoin"></i> Крипта</div>
+            <input class="bal-input" type="number" id="bal-crypto" placeholder="0" oninput="saveBalances()">
+            <div class="bal-currency">€ эквив.</div>
+          </div>
+          <div class="bal-card bc-total">
+            <div class="bal-label">Всего</div>
+            <div class="bal-total-val" id="bal-total">0 €</div>
+            <div class="bal-total-sub">сумма кошельков</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- content -->
+</div><!-- main-area -->
+</div><!-- app -->
+
+<!-- ═══════════ TOAST ═══════════ -->
+<div class="toast" id="toast"><i class="fa-solid fa-check"></i><span id="toast-msg"></span></div>
+
+<!-- ═══════════ MODAL ═══════════ -->
+<div class="modal-overlay" id="modal-overlay" onclick="overlayClick(event)">
+  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-header">
+      <span class="modal-title" id="modal-title">Добавить</span>
+      <button class="modal-close" onclick="closeModal()" aria-label="Закрыть"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div id="modal-body"></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal()">Отмена</button>
+      <button class="btn btn-primary" onclick="confirmModal()">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+// ══════════════════════════════════════════════
+//  CONSTANTS
+// ══════════════════════════════════════════════
+const MONTHS = ['Январь','Февраль','Март','Апрель','Май','Июнь',
+                'Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+
+const CATS = [
+  {id:'food',        name:'Еда',          color:'#1E8040'},
+  {id:'pet',         name:'Животные',     color:'#A06010'},
+  {id:'util',        name:'Коммуналка',   color:'#3B6EF0'},
+  {id:'health',      name:'Здоровье',     color:'#C0392B'},
+  {id:'clothes',     name:'Одежда',       color:'#B03070'},
+  {id:'transport',   name:'Транспорт',    color:'#5B3DB5'},
+  {id:'entertainment',name:'Развлечения', color:'#1A7A62'},
+  {id:'home',        name:'Дом',          color:'#7A5030'},
+  {id:'other',       name:'Другое',       color:'#888'},
+];
+
+const PAY_LABEL = {card:'Карта', cash:'Наличные', crypto:'Крипта'};
+const PAY_BADGE = p => `<span class="badge badge-${p}">${PAY_LABEL[p]||p}</span>`;
+
+const REMINDER_COLORS = ['#3B6EF0','#5B3DB5','#B03070','#1E8040','#A06010','#C0392B','#1A7A62'];
+
+// ══════════════════════════════════════════════
+//  STATE & PERSISTENCE
+// ══════════════════════════════════════════════
+const STORAGE_KEY = 'budget_dk_v3';
+
+function defaultState() {
+  return {
+    incomes: [], expenses: [], animalExpenses: [],
+    reminders: [], grocery: [], receipts: [], savings: [],
+    balances: {card:0, cash:0, crypto:0},
+    personFilter: 'all',
+    catFilter: 'all',
+    groceryFilter: 'all',
+    nextId: 1,
+  };
+}
+
+let S = (() => {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      // merge with defaults so new keys always exist
+      return Object.assign(defaultState(), parsed);
+    }
+  } catch(e) { console.warn('State load error:', e); }
+  return defaultState();
+})();
+
+function save() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(S)); }
+  catch(e) { console.warn('Save error:', e); }
+}
+
+function nextId() {
+  S.nextId = (S.nextId || 1) + 1;
+  return S.nextId;
+}
+
+// ══════════════════════════════════════════════
+//  NAV & ROUTING
+// ══════════════════════════════════════════════
+let currentTab = 'overview';
+
+const TAB_TITLES = {
+  overview:'Обзор', income:'Доходы', expenses:'Расходы',
+  animals:'Животные', reminders:'Напоминания',
+  grocery:'Список продуктов', receipts:'Чеки', savings:'Копилки',
+};
+
+const TAB_ADD_TYPE = {
+  overview:'expense', income:'income', expenses:'expense',
+  animals:'animal', reminders:'reminder',
+  grocery:'grocery', receipts:'receipt', savings:'saving',
+};
+
+function showTab(name, btn) {
+  document.querySelectorAll('.tab-page').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.sb-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  if (btn) btn.classList.add('active');
+  document.getElementById('page-title').textContent = TAB_TITLES[name] || name;
+  currentTab = name;
+  renderTab(name);
+}
+
+function openAdd() {
+  openModal(TAB_ADD_TYPE[currentTab] || 'expense');
+}
+
+// ══════════════════════════════════════════════
+//  DATE HELPERS
+// ══════════════════════════════════════════════
+let curMonth = new Date().getMonth();
+let curYear  = new Date().getFullYear();
+
+function changeMonth(dir) {
+  curMonth += dir;
+  if (curMonth > 11) { curMonth = 0; curYear++; }
+  if (curMonth < 0)  { curMonth = 11; curYear--; }
+  updateMonthLabel();
+  renderTab(currentTab);
+}
+
+function updateMonthLabel() {
+  document.getElementById('month-label').textContent = MONTHS[curMonth] + ' ' + curYear;
+}
+
+function inMonth(dateStr) {
+  if (!dateStr) return true;
+  // Use string comparison to avoid timezone issues
+  const [y, m] = dateStr.split('-').map(Number);
+  return m - 1 === curMonth && y === curYear;
+}
+
+function weekOfDate(dateStr) {
+  if (!dateStr) return 1;
+  const day = parseInt(dateStr.split('-')[2], 10);
+  if (day <= 7)  return 1;
+  if (day <= 14) return 2;
+  if (day <= 21) return 3;
+  return 4;
+}
+
+function todayStr() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+// ══════════════════════════════════════════════
+//  FORMAT
+// ══════════════════════════════════════════════
+function fmt(n) {
+  return (n || 0).toLocaleString('ru-RU', {minimumFractionDigits:0, maximumFractionDigits:0}) + ' €';
+}
+
+function fmtDate(dateStr) {
+  if (!dateStr) return '';
+  const [y, m, d] = dateStr.split('-');
+  return `${d}.${m}.${y}`;
+}
+
+// ══════════════════════════════════════════════
+//  RENDER DISPATCH
+// ══════════════════════════════════════════════
+function renderTab(name) {
+  const fn = {
+    overview: renderOverview,
+    income: renderIncome,
+    expenses: renderExpenses,
+    animals: renderAnimals,
+    reminders: renderReminders,
+    grocery: renderGrocery,
+    receipts: renderReceipts,
+    savings: renderSavings,
+  };
+  if (fn[name]) fn[name]();
+}
+
+// ══════════════════════════════════════════════
+//  CHARTS (persistent instances)
+// ══════════════════════════════════════════════
+let charts = {};
+function destroyChart(key) {
+  if (charts[key]) { charts[key].destroy(); delete charts[key]; }
+}
+
+// ══════════════════════════════════════════════
+//  OVERVIEW
+// ══════════════════════════════════════════════
+function renderOverview() {
+  const inc  = S.incomes.filter(i => inMonth(i.date));
+  const exp  = S.expenses.filter(e => inMonth(e.date));
+  const aexp = S.animalExpenses.filter(e => inMonth(e.date));
+
+  const totalInc  = inc.reduce((s, i) => s + (i.amount||0), 0);
+  const totalExp  = exp.reduce((s, e) => s + (e.amount||0), 0);
+  const totalAExp = aexp.reduce((s, e) => s + (e.amount||0), 0);
+  const totalAll  = totalExp + totalAExp;
+  const balance   = totalInc - totalAll;
+
+  const diana    = inc.filter(i => i.person === 'diana').reduce((s, i) => s + (i.amount||0), 0);
+  const kristina = inc.filter(i => i.person === 'kristina').reduce((s, i) => s + (i.amount||0), 0);
+
+  // KPIs
+  document.getElementById('kpi-row').innerHTML = `
+    <div class="kpi-card c-green">
+      <div class="kpi-label">Доходы</div>
+      <div class="kpi-val">${fmt(totalInc)}</div>
+      <div class="kpi-sub">Диана + Кристина</div>
+    </div>
+    <div class="kpi-card c-red">
+      <div class="kpi-label">Расходы</div>
+      <div class="kpi-val">${fmt(totalAll)}</div>
+      <div class="kpi-sub">Все категории</div>
+    </div>
+    <div class="kpi-card ${balance >= 0 ? 'c-blue' : 'c-red'}">
+      <div class="kpi-label">Остаток</div>
+      <div class="kpi-val">${fmt(balance)}</div>
+      <div class="kpi-sub">${balance >= 0 ? 'В плюсе' : 'Перерасход'}</div>
+    </div>
+    <div class="kpi-card c-amber">
+      <div class="kpi-label">Питомцы</div>
+      <div class="kpi-val">${fmt(totalAExp)}</div>
+      <div class="kpi-sub">За месяц</div>
+    </div>
+  `;
+
+  // Summary
+  document.getElementById('summary-box').innerHTML = `
+    <div class="summary-box-title"><i class="fa-solid fa-chart-bar"></i> Итоги ${MONTHS[curMonth]}</div>
+    <div class="sum-row"><span class="sl">Диана зарабатывает</span><span class="sr">${fmt(diana)}</span></div>
+    <div class="sum-row"><span class="sl">Кристина зарабатывает</span><span class="sr">${fmt(kristina)}</span></div>
+    <div class="sum-row"><span class="sl">Расходы</span><span class="sr">${fmt(totalExp)}</span></div>
+    <div class="sum-row"><span class="sl">Животные</span><span class="sr">${fmt(totalAExp)}</span></div>
+    <hr class="sum-divider">
+    <div class="sum-row sum-total">
+      <span class="sl">Свободно</span>
+      <span class="sr" style="color:${balance >= 0 ? 'var(--accent-dark)' : 'var(--red)'}">${fmt(balance)}</span>
+    </div>
+  `;
+
+  // Weeks
+  const allExp = [...exp, ...aexp];
+  document.getElementById('ov-weeks').innerHTML = [1,2,3,4].map(w => {
+    const wTotal = allExp.filter(e => weekOfDate(e.date) === w).reduce((s, e) => s + (e.amount||0), 0);
+    return `<div class="wk-card">
+      <div class="wk-label">Нед. ${w}</div>
+      <div class="wk-val" style="color:var(--red)">${fmt(wTotal)}</div>
+      <div class="wk-sub">расходы</div>
+    </div>`;
+  }).join('');
+
+  // Category chart
+  const catTotals = {};
+  CATS.forEach(c => catTotals[c.id] = 0);
+  exp.forEach(e  => { catTotals[e.cat] = (catTotals[e.cat]||0) + (e.amount||0); });
+  aexp.forEach(e => { catTotals['pet'] = (catTotals['pet']||0) + (e.amount||0); });
+  const activeCats = CATS.filter(c => catTotals[c.id] > 0);
+
+  destroyChart('cat');
+  if (activeCats.length) {
+    charts['cat'] = new Chart(document.getElementById('cat-chart'), {
+      type: 'bar',
+      data: {
+        labels: activeCats.map(c => c.name),
+        datasets: [{
+          data: activeCats.map(c => catTotals[c.id]),
+          backgroundColor: activeCats.map(c => c.color + 'cc'),
+          borderRadius: 5, borderSkipped: false,
+        }],
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: {display:false}, tooltip: { callbacks: { label: ctx => fmt(ctx.raw) } } },
+        scales: {
+          y: { ticks: {callback: v => v+'€'}, grid: {color:'rgba(0,0,0,.05)'}, border:{display:false} },
+          x: { grid: {display:false}, border:{display:false} },
+        },
+      },
+    });
+  }
+
+  // Pay chart
+  const payTotals = {card:0, cash:0, crypto:0};
+  allExp.forEach(e => { payTotals[e.pay] = (payTotals[e.pay]||0) + (e.amount||0); });
+
+  destroyChart('pay');
+  charts['pay'] = new Chart(document.getElementById('pay-chart'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Карта','Наличные','Крипта'],
+      datasets: [{
+        data: [payTotals.card, payTotals.cash, payTotals.crypto],
+        backgroundColor: ['#3B6EF0','#1E8040','#5B3DB5'],
+        borderWidth: 3, borderColor: '#fff',
+      }],
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position:'bottom', labels:{font:{size:11}, padding:12, boxWidth:10, boxHeight:10} },
+        tooltip: { callbacks: { label: ctx => ctx.label + ': ' + fmt(ctx.raw) } },
+      },
+      cutout: '62%',
+    },
+  });
+}
+
+// ══════════════════════════════════════════════
+//  INCOME
+// ══════════════════════════════════════════════
+function renderIncome() {
+  const pf   = S.personFilter || 'all';
+  const list = S.incomes.filter(i => inMonth(i.date) && (pf === 'all' || i.person === pf));
+  const total = list.reduce((s, i) => s + (i.amount||0), 0);
+
+  document.getElementById('income-total-sub').textContent = 'Итого: ' + fmt(total);
+
+  document.getElementById('income-list').innerHTML = list.length
+    ? list.map(i => `
+      <div class="row-item">
+        <div class="row-dot" style="background:${i.person==='diana'?'var(--rose)':'var(--purple)'}"></div>
+        <div class="row-body">
+          <div class="row-name">${esc(i.comment || 'Доход')}</div>
+          <div class="row-meta">
+            <span class="badge badge-${i.person==='diana'?'diana':'kristina'}">${i.person==='diana'?'Диана':'Кристина'}</span>
+            ${i.week ? `<span class="badge badge-cat">Нед. ${i.week}</span>` : ''}
+            <span>${fmtDate(i.date)}</span>
+          </div>
+        </div>
+        <div class="row-right">
+          <div class="row-amount pos">${fmt(i.amount)}</div>
+          <div class="row-pay-badge">${PAY_BADGE(i.pay)}</div>
+        </div>
+        <button class="del-btn" onclick="del('incomes',${i.id})" aria-label="Удалить"><i class="fa-solid fa-trash"></i></button>
+      </div>`)
+    .join('')
+    : emptyState('fa-arrow-trend-up', 'Нет доходов за этот период');
+
+  document.getElementById('income-weeks').innerHTML = [1,2,3,4].map(w => {
+    const wTotal = S.incomes
+      .filter(i => inMonth(i.date) && i.week === w && (pf === 'all' || i.person === pf))
+      .reduce((s, i) => s + (i.amount||0), 0);
+    return `<div class="wk-card">
+      <div class="wk-label">Неделя ${w}</div>
+      <div class="wk-val" style="color:var(--green)">${fmt(wTotal)}</div>
+    </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════════
+//  EXPENSES
+// ══════════════════════════════════════════════
+function renderExpenses() {
+  const cf   = S.catFilter || 'all';
+  const list = S.expenses.filter(e => inMonth(e.date) && (cf === 'all' || e.cat === cf));
+  const total = list.reduce((s, e) => s + (e.amount||0), 0);
+
+  document.getElementById('expenses-total-sub').textContent = 'Итого: ' + fmt(total);
+
+  // Chips
+  document.getElementById('cat-chips').innerHTML =
+    `<button class="chip ${cf==='all'?'':'inactive'}" style="border-color:#888;color:#888;background:${cf==='all'?'#f1f0ee':'none'}" onclick="setCat('all')">Все</button>` +
+    CATS.map(c => `<button class="chip ${cf===c.id?'':'inactive'}" style="border-color:${c.color};color:${c.color};background:${cf===c.id?c.color+'18':'none'}" onclick="setCat('${c.id}')">${c.name}</button>`).join('');
+
+  document.getElementById('expense-list').innerHTML = list.length
+    ? list.map(e => {
+        const cat = CATS.find(c => c.id === e.cat) || CATS[8];
+        return `<div class="row-item">
+          <div class="row-dot" style="background:${cat.color}"></div>
+          <div class="row-body">
+            <div class="row-name">${esc(e.name)}</div>
+            <div class="row-meta">
+              <span class="badge badge-cat" style="background:${cat.color}18;color:${cat.color}">${cat.name}</span>
+              <span>${fmtDate(e.date)}</span>
+              ${e.comment ? `<span>${esc(e.comment)}</span>` : ''}
+            </div>
+          </div>
+          <div class="row-right">
+            <div class="row-amount">${fmt(e.amount)}</div>
+            <div class="row-pay-badge">${PAY_BADGE(e.pay)}</div>
+          </div>
+          <button class="del-btn" onclick="del('expenses',${e.id})" aria-label="Удалить"><i class="fa-solid fa-trash"></i></button>
+        </div>`;
+      }).join('')
+    : emptyState('fa-receipt', 'Нет расходов в этой категории');
+}
+
+function setCat(c) { S.catFilter = c; save(); renderExpenses(); }
+
+// ══════════════════════════════════════════════
+//  ANIMALS
+// ══════════════════════════════════════════════
+function renderAnimals() {
+  const list  = S.animalExpenses.filter(e => inMonth(e.date));
+  const total = list.reduce((s, e) => s + (e.amount||0), 0);
+
+  // Single summary box
+  document.getElementById('animal-summary').innerHTML = `
+    <div class="animal-total-box">
+      <div class="animal-total-icon">🐾</div>
+      <div>
+        <div class="animal-total-label">2 кота + 2 собаки</div>
+        <div class="animal-total-val">${fmt(total)}</div>
+        <div class="animal-total-sub">всего за ${MONTHS[curMonth]}</div>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('animal-list').innerHTML = list.length
+    ? list.map(e => `
+      <div class="row-item">
+        <div class="row-icon-emoji">🐾</div>
+        <div class="row-body">
+          <div class="row-name">${esc(e.cat||'Животные')}</div>
+          <div class="row-meta">
+            <span>${fmtDate(e.date)}</span>
+            ${e.comment ? `<span>${esc(e.comment)}</span>` : ''}
+          </div>
+        </div>
+        <div class="row-right">
+          <div class="row-amount">${fmt(e.amount)}</div>
+          <div class="row-pay-badge">${PAY_BADGE(e.pay)}</div>
+        </div>
+        <button class="del-btn" onclick="del('animalExpenses',${e.id})" aria-label="Удалить"><i class="fa-solid fa-trash"></i></button>
+      </div>`).join('')
+    : emptyState('fa-paw', 'Нет расходов на животных в этом месяце');
+}
+
+// ══════════════════════════════════════════════
+//  REMINDERS
+// ══════════════════════════════════════════════
+function renderReminders() {
+  const today = new Date().getDate();
+  const sorted = [...S.reminders].sort((a, b) => a.day - b.day);
+
+  document.getElementById('reminder-list').innerHTML = sorted.length
+    ? sorted.map(r => {
+        const diff = r.day >= today ? r.day - today : 30 - (today - r.day);
+        let pillClass = 'reminder-ok', pillText = `Через ${diff} дн.`;
+        if (diff === 0) { pillClass = 'reminder-today'; pillText = 'Сегодня!'; }
+        else if (diff <= 3) { pillClass = 'reminder-soon'; pillText = `Через ${diff} дн.`; }
+
+        return `<div class="row-item">
+          <div class="row-dot" style="background:${r.color||'var(--accent)'}"></div>
+          <div class="row-body">
+            <div class="row-name">${esc(r.name)}</div>
+            <div class="row-meta"><span>${r.day}-е число</span>${PAY_BADGE(r.pay)}</div>
+          </div>
+          <div class="row-right">
+            <div class="row-amount">${fmt(r.amount)}</div>
+            <div class="row-pay-badge"><span class="reminder-pill ${pillClass}">${pillText}</span></div>
+          </div>
+          <button class="del-btn" onclick="del('reminders',${r.id})" aria-label="Удалить"><i class="fa-solid fa-trash"></i></button>
+        </div>`;
+      }).join('')
+    : emptyState('fa-bell', 'Нет напоминаний — добавьте регулярные платежи');
+}
+
+// ══════════════════════════════════════════════
+//  GROCERY
+// ══════════════════════════════════════════════
+function renderGrocery() {
+  const gf   = S.groceryFilter || 'all';
+  const list = S.grocery.filter(g => gf === 'all' || g.person === 'all' || g.person === gf);
+
+  document.getElementById('grocery-list').innerHTML = list.length
+    ? list.map(g => `
+      <div class="groc-item ${g.done ? 'done-item' : ''}">
+        <input type="checkbox" class="groc-cb" ${g.done ? 'checked' : ''} onchange="toggleGrocery(${g.id})">
+        <span class="groc-name">${esc(g.name)}</span>
+        <span class="groc-qty">${esc(g.qty||'')}</span>
+        <span class="groc-price">${g.price ? fmt(g.price) : ''}</span>
+        <button class="del-btn" onclick="del('grocery',${g.id})" aria-label="Удалить"><i class="fa-solid fa-trash"></i></button>
+      </div>`).join('')
+    : emptyState('fa-cart-shopping', 'Список пуст — добавьте продукты');
+
+  const remaining = list.filter(g => !g.done).reduce((s, g) => s + (g.price||0), 0);
+  document.getElementById('grocery-total').textContent = fmt(remaining);
+}
+
+function toggleGrocery(id) {
+  const g = S.grocery.find(g => g.id === id);
+  if (g) { g.done = !g.done; save(); renderGrocery(); }
+}
+
+// ══════════════════════════════════════════════
+//  RECEIPTS
+// ══════════════════════════════════════════════
+function renderReceipts() {
+  const list = S.receipts || [];
+  document.getElementById('receipt-list').innerHTML = list.length
+    ? list.map(r => `
+      <div class="row-item">
+        <div class="row-dot" style="background:var(--accent)"></div>
+        <div class="row-body">
+          <div class="row-name">${esc(r.store)}</div>
+          <div class="row-meta"><span>${fmtDate(r.date)}</span>${r.comment?`<span>${esc(r.comment)}</span>`:''}</div>
+        </div>
+        <div class="row-right">
+          <div class="row-amount">${fmt(r.amount)}</div>
+          <div class="row-pay-badge">${PAY_BADGE(r.pay)}</div>
+        </div>
+        <button class="del-btn" onclick="del('receipts',${r.id})" aria-label="Удалить"><i class="fa-solid fa-trash"></i></button>
+      </div>`).join('')
+    : emptyState('fa-file-invoice-dollar', 'Нет чеков — добавьте первый');
+}
+
+// ══════════════════════════════════════════════
+//  SAVINGS
+// ══════════════════════════════════════════════
+const PIGGY_COLORS = ['#3B6EF0','#1E8040','#A06010','#B03070','#5B3DB5','#C0392B'];
+
+function renderSavings() {
+  document.getElementById('piggy-grid').innerHTML = (S.savings||[]).length
+    ? (S.savings||[]).map((sv, i) => {
+        const pct  = sv.goal > 0 ? Math.min(100, Math.round((sv.current / sv.goal) * 100)) : 0;
+        const col  = sv.color || PIGGY_COLORS[i % PIGGY_COLORS.length];
+        return `<div class="piggy-card">
+          <div class="piggy-accent" style="background:${col}"></div>
+          <div class="piggy-name">${esc(sv.name)}</div>
+          <div class="piggy-goal">Цель: ${fmt(sv.goal)}</div>
+          <div class="piggy-amounts">
+            <span style="color:${col};font-weight:700">${fmt(sv.current)}</span>
+            <span>${pct}%</span>
+          </div>
+          <div class="prog-bar"><div class="prog-fill" style="width:${pct}%;background:${col}"></div></div>
+          <div class="piggy-pct">Осталось ${fmt(sv.goal - sv.current)}</div>
+          <div class="piggy-actions">
+            <button class="piggy-btn" onclick="addToSaving(${sv.id})"><i class="fa-solid fa-plus"></i> Пополнить</button>
+            <button class="piggy-del" onclick="del('savings',${sv.id})" aria-label="Удалить копилку"><i class="fa-solid fa-trash"></i></button>
+          </div>
+        </div>`;
+      }).join('')
+    : `<div style="grid-column:1/-1">${emptyState('fa-piggy-bank', 'Нет копилок — создайте первую')}</div>`;
+
+  // Balances
+  const b = S.balances || {card:0, cash:0, crypto:0};
+  document.getElementById('bal-card').value   = b.card   || '';
+  document.getElementById('bal-cash').value   = b.cash   || '';
+  document.getElementById('bal-crypto').value = b.crypto || '';
+  updateBalTotal();
+}
+
+function addToSaving(id) {
+  const amt = parseFloat(prompt('Сколько добавить в копилку? (€)'));
+  if (!amt || isNaN(amt) || amt <= 0) return;
+  const sv = (S.savings||[]).find(s => s.id === id);
+  if (sv) {
+    sv.current = Math.min(sv.goal, sv.current + amt);
+    save(); renderSavings(); toast('Копилка пополнена!');
+  }
+}
+
+function saveBalances() {
+  S.balances = {
+    card:   parseFloat(document.getElementById('bal-card').value)   || 0,
+    cash:   parseFloat(document.getElementById('bal-cash').value)   || 0,
+    crypto: parseFloat(document.getElementById('bal-crypto').value) || 0,
+  };
+  save(); updateBalTotal();
+}
+
+function updateBalTotal() {
+  const b = S.balances || {card:0, cash:0, crypto:0};
+  document.getElementById('bal-total').textContent = fmt((b.card||0) + (b.cash||0) + (b.crypto||0));
+}
+
+// ══════════════════════════════════════════════
+//  PERSON FILTER TABS (generic)
+// ══════════════════════════════════════════════
+function setPFilter(btn, val, containerId) {
+  document.querySelectorAll('#' + containerId + ' .ptab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function setPerson(btn, val) {
+  setPFilter(btn, val, 'income-ptabs');
+  S.personFilter = val; save(); renderIncome();
+}
+
+// ══════════════════════════════════════════════
+//  DELETE
+// ══════════════════════════════════════════════
+function del(list, id) {
+  S[list] = (S[list]||[]).filter(item => item.id !== id);
+  save(); renderTab(currentTab); toast('Удалено');
+}
+
+// ══════════════════════════════════════════════
+//  MODAL FORMS
+// ══════════════════════════════════════════════
+const PAY_OPTS = `<option value="card">Карта</option><option value="cash">Наличные</option><option value="crypto">Крипта</option>`;
+const CAT_OPTS = CATS.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+
+
+const FORMS = {
+  income: () => `
+    <div class="fg2">
+      <div class="field"><label>Кто получает</label>
+        <select id="m-person"><option value="diana">Диана</option><option value="kristina">Кристина</option></select>
+      </div>
+      <div class="field"><label>Сумма (€)</label><input type="number" id="m-amount" placeholder="0" min="0" step="0.01" autofocus></div>
+    </div>
+    <div class="fg2">
+      <div class="field"><label>Тип дохода</label>
+        <select id="m-type">
+          <option value="salary">Зарплата (месяц)</option>
+          <option value="weekly">Еженедельный</option>
+          <option value="freelance">Фриланс</option>
+          <option value="other">Другое</option>
+        </select>
+      </div>
+      <div class="field"><label>Неделя</label>
+        <select id="m-week">
+          <option value="">— не указана —</option>
+          <option value="1">Неделя 1 (1–7)</option>
+          <option value="2">Неделя 2 (8–14)</option>
+          <option value="3">Неделя 3 (15–21)</option>
+          <option value="4">Неделя 4 (22–31)</option>
+        </select>
+      </div>
+    </div>
+    <div class="fg2">
+      <div class="field"><label>Способ</label><select id="m-pay">${PAY_OPTS}</select></div>
+      <div class="field"><label>Дата</label><input type="date" id="m-date" value="${todayStr()}"></div>
+    </div>
+    <div class="fg1"><div class="field"><label>Комментарий</label><input type="text" id="m-comment" placeholder="Зарплата, проект..."></div></div>
+  `,
+
+  expense: () => `
+    <div class="fg2">
+      <div class="field"><label>Название</label><input type="text" id="m-name" placeholder="Что оплачено?" autofocus></div>
+      <div class="field"><label>Сумма (€)</label><input type="number" id="m-amount" placeholder="0" min="0" step="0.01"></div>
+    </div>
+    <div class="fg2">
+      <div class="field"><label>Категория</label><select id="m-cat">${CAT_OPTS}</select></div>
+      <div class="field"><label>Кто платит</label>
+        <select id="m-person">
+          <option value="both">Обе</option>
+          <option value="diana">Диана</option>
+          <option value="kristina">Кристина</option>
+        </select>
+      </div>
+    </div>
+    <div class="fg2">
+      <div class="field"><label>Способ оплаты</label><select id="m-pay">${PAY_OPTS}</select></div>
+      <div class="field"><label>Дата</label><input type="date" id="m-date" value="${todayStr()}"></div>
+    </div>
+    <div class="fg1"><div class="field"><label>Комментарий</label><input type="text" id="m-comment" placeholder="Детали..."></div></div>
+  `,
+
+  animal: () => `
+    <div class="fg2">
+      <div class="field"><label>Что именно</label>
+        <select id="m-cat">
+          <option>Корм</option><option>Ветеринар</option><option>Лекарства</option>
+          <option>Игрушки</option><option>Гигиена</option><option>Другое</option>
+        </select>
+      </div>
+      <div class="field"><label>Сумма (€)</label><input type="number" id="m-amount" placeholder="0" min="0" step="0.01" autofocus></div>
+    </div>
+    <div class="fg2">
+      <div class="field"><label>Способ оплаты</label><select id="m-pay">${PAY_OPTS}</select></div>
+      <div class="field"><label>Дата</label><input type="date" id="m-date" value="${todayStr()}"></div>
+    </div>
+    <div class="fg1"><div class="field"><label>Комментарий</label><input type="text" id="m-comment" placeholder="Корм для котов, врач для Беллы..."></div></div>
+  `,
+
+  reminder: () => `
+    <div class="fg2">
+      <div class="field"><label>Название платежа</label><input type="text" id="m-name" placeholder="Аренда, интернет..." autofocus></div>
+      <div class="field"><label>Сумма (€)</label><input type="number" id="m-amount" placeholder="0" min="0" step="0.01"></div>
+    </div>
+    <div class="fg2">
+      <div class="field"><label>День месяца</label><input type="number" id="m-day" min="1" max="31" placeholder="1–31"></div>
+      <div class="field"><label>Способ оплаты</label><select id="m-pay">${PAY_OPTS}</select></div>
+    </div>
+  `,
+
+  grocery: () => `
+    <div class="fg2">
+      <div class="field"><label>Продукт</label><input type="text" id="m-name" placeholder="Молоко, хлеб..." autofocus></div>
+      <div class="field"><label>Количество</label><input type="text" id="m-qty" placeholder="2л, 3 шт..."></div>
+    </div>
+    <div class="fg2">
+      <div class="field"><label>Цена (€, необяз.)</label><input type="number" id="m-price" placeholder="0" min="0" step="0.01"></div>
+      <div class="field"><label>Кто добавил</label>
+        <select id="m-person">
+          <option value="all">Обе</option>
+          <option value="diana">Диана</option>
+          <option value="kristina">Кристина</option>
+        </select>
+      </div>
+    </div>
+  `,
+
+  receipt: () => `
+    <div class="fg2">
+      <div class="field"><label>Магазин / место</label><input type="text" id="m-store" placeholder="Lidl, Konzum, аптека..." autofocus></div>
+      <div class="field"><label>Сумма (€)</label><input type="number" id="m-amount" placeholder="0" min="0" step="0.01"></div>
+    </div>
+    <div class="fg2">
+      <div class="field"><label>Дата</label><input type="date" id="m-date" value="${todayStr()}"></div>
+      <div class="field"><label>Способ оплаты</label><select id="m-pay">${PAY_OPTS}</select></div>
+    </div>
+    <div class="fg1"><div class="field"><label>Комментарий</label><textarea id="m-comment" placeholder="Что купили..."></textarea></div></div>
+  `,
+
+  saving: () => `
+    <div class="fg2">
+      <div class="field"><label>Название цели</label><input type="text" id="m-name" placeholder="Отпуск, техника..." autofocus></div>
+      <div class="field"><label>Цель (€)</label><input type="number" id="m-goal" placeholder="1000" min="1" step="1"></div>
+    </div>
+    <div class="fg1"><div class="field"><label>Уже накоплено (€)</label><input type="number" id="m-current" placeholder="0" value="0" min="0" step="1"></div></div>
+  `,
+};
+
+const MODAL_TITLES = {
+  income:'Добавить доход', expense:'Добавить расход', animal:'Расход на питомца',
+  reminder:'Новое напоминание', grocery:'Добавить продукт', receipt:'Добавить чек', saving:'Новая копилка',
+};
+
+let activeModal = null;
+
+function openModal(type) {
+  activeModal = type;
+  document.getElementById('modal-title').textContent = MODAL_TITLES[type] || 'Добавить';
+  document.getElementById('modal-body').innerHTML = (FORMS[type] || (() => ''))();
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+  activeModal = null;
+}
+
+function overlayClick(e) {
+  if (e.target === document.getElementById('modal-overlay')) closeModal();
+}
+
+function gv(id) {
+  const el = document.getElementById(id);
+  return el ? el.value.trim() : '';
+}
+
+function confirmModal() {
+  const id = nextId();
+  save(); // pre-save so nextId is persisted
+
+  if (activeModal === 'income') {
+    if (!gv('m-amount') || +gv('m-amount') <= 0) { shake(); return; }
+    S.incomes.push({
+      id, person: gv('m-person'), amount: +gv('m-amount'),
+      type: gv('m-type'), week: gv('m-week') ? +gv('m-week') : null,
+      comment: gv('m-comment'), pay: gv('m-pay'), date: gv('m-date'),
+    });
+
+  } else if (activeModal === 'expense') {
+    if (!gv('m-name') || !gv('m-amount') || +gv('m-amount') <= 0) { shake(); return; }
+    S.expenses.push({
+      id, name: gv('m-name'), cat: gv('m-cat'), amount: +gv('m-amount'),
+      comment: gv('m-comment'), pay: gv('m-pay'), person: gv('m-person'), date: gv('m-date'),
+    });
+
+  } else if (activeModal === 'animal') {
+    if (!gv('m-amount') || +gv('m-amount') <= 0) { shake(); return; }
+    S.animalExpenses.push({
+      id, cat: gv('m-cat'), amount: +gv('m-amount'),
+      comment: gv('m-comment'), pay: gv('m-pay'), date: gv('m-date'),
+    });
+
+  } else if (activeModal === 'reminder') {
+    if (!gv('m-name') || !gv('m-amount') || !gv('m-day')) { shake(); return; }
+    S.reminders.push({
+      id, name: gv('m-name'), amount: +gv('m-amount'), day: +gv('m-day'),
+      pay: gv('m-pay'), color: REMINDER_COLORS[S.reminders.length % REMINDER_COLORS.length],
+    });
+
+  } else if (activeModal === 'grocery') {
+    if (!gv('m-name')) { shake(); return; }
+    S.grocery.push({
+      id, name: gv('m-name'), qty: gv('m-qty'),
+      price: parseFloat(gv('m-price')) || 0, done: false, person: gv('m-person'),
+    });
+
+  } else if (activeModal === 'receipt') {
+    if (!gv('m-store') || !gv('m-amount') || +gv('m-amount') <= 0) { shake(); return; }
+    S.receipts.unshift({
+      id, store: gv('m-store'), amount: +gv('m-amount'),
+      pay: gv('m-pay'), date: gv('m-date'), comment: gv('m-comment'),
+    });
+
+  } else if (activeModal === 'saving') {
+    if (!gv('m-name') || !gv('m-goal') || +gv('m-goal') <= 0) { shake(); return; }
+    S.savings.push({
+      id, name: gv('m-name'), goal: +gv('m-goal'),
+      current: parseFloat(gv('m-current')) || 0,
+      color: PIGGY_COLORS[S.savings.length % PIGGY_COLORS.length],
+    });
+  }
+
+  save();
+  closeModal();
+  renderTab(currentTab);
+  toast('Сохранено');
+}
+
+function shake() {
+  const box = document.querySelector('.modal-box');
+  box.style.animation = 'none';
+  setTimeout(() => {
+    box.style.animation = 'shake .3s ease';
+  }, 10);
+}
+
+// ══════════════════════════════════════════════
+//  EXPORT / IMPORT
+// ══════════════════════════════════════════════
+function exportData() {
+  const blob = new Blob([JSON.stringify(S, null, 2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `budget-backup-${todayStr()}.json`;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+  toast('Файл скачан');
+}
+
+function importData(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const data = JSON.parse(ev.target.result);
+      if (data && typeof data === 'object') {
+        Object.assign(S, data);
+        save();
+        renderTab(currentTab);
+        toast('Данные загружены!');
+      }
+    } catch(err) {
+      alert('Ошибка чтения файла. Убедитесь что это корректный JSON.');
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+}
+
+// ══════════════════════════════════════════════
+//  TOAST
+// ══════════════════════════════════════════════
+let toastTimer = null;
+function toast(msg) {
+  const el = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2400);
+}
+
+// ══════════════════════════════════════════════
+//  HELPERS
+// ══════════════════════════════════════════════
+function esc(str) {
+  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function emptyState(icon, text) {
+  return `<div class="empty-state"><i class="fa-solid ${icon}"></i><p>${text}</p></div>`;
+}
+
+// ══════════════════════════════════════════════
+//  KEYBOARD
+// ══════════════════════════════════════════════
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
+  if (e.key === 'Enter' && e.ctrlKey && document.getElementById('modal-overlay').classList.contains('open')) {
+    confirmModal();
+  }
+});
+
+// ══════════════════════════════════════════════
+//  SHAKE ANIMATION
+// ══════════════════════════════════════════════
+const shakeStyle = document.createElement('style');
+shakeStyle.textContent = `
+  @keyframes shake {
+    0%,100%{transform:translateX(0)}
+    20%{transform:translateX(-8px)}
+    40%{transform:translateX(8px)}
+    60%{transform:translateX(-5px)}
+    80%{transform:translateX(5px)}
+  }
+`;
+document.head.appendChild(shakeStyle);
+
+// ══════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════
+updateMonthLabel();
+renderTab('overview');
+</script>
+</body>
+</html>
