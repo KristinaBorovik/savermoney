@@ -289,6 +289,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
     <div class="sb-section-label">Списки</div>
     <button class="sb-btn" onclick="showTab('grocery',this)"><i class="fa-solid fa-cart-shopping"></i><span>Продукты</span></button>
     <button class="sb-btn" onclick="showTab('receipts',this)"><i class="fa-solid fa-file-invoice-dollar"></i><span>Чеки</span></button>
+    <button class="sb-btn" onclick="showTab('purchases',this)"><i class="fa-solid fa-cart-shopping"></i><span>Покупки</span></button>
     <button class="sb-btn" onclick="showTab('savings',this)"><i class="fa-solid fa-piggy-bank"></i><span>Копилки</span></button>
   </nav>
   <div class="sb-month">
@@ -422,6 +423,14 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
       </div>
     </div>
 
+    <!-- PURCHASES -->
+    <div id="tab-purchases" class="tab-page">
+      <div class="card">
+        <div class="card-header"><div><span class="card-title">Регулярные покупки</span><div class="card-sub">Корм, наполнитель и другие периодические расходы — копим равномерно</div></div></div>
+        <div class="piggy-grid" id="purchases-grid"></div>
+      </div>
+    </div>
+
     <!-- SAVINGS -->
     <div id="tab-savings" class="tab-page">
       <div class="card">
@@ -521,7 +530,7 @@ const PLAN_COLORS=['#3B6EF0','#C0392B','#1E8040','#5B3DB5','#A06010','#B03070','
 function defaultState(){
   return{
     incomes:[],expenses:[],animalExpenses:[],reminders:[],grocery:[],receipts:[],savings:[],
-    plannedExpenses:[],plannedPaid:{},
+    plannedExpenses:[],plannedPaid:{},recurringPurchases:[],
     balances:{card:0,cash:0,crypto:0},
     personFilter:'all',catFilter:'all',groceryFilter:'all',
     nextId:1,
@@ -578,8 +587,8 @@ if(window._fbReady)initFirebase();
 function nextId(){S.nextId=(S.nextId||1)+1;return S.nextId;}
 
 let currentTab='overview';
-const TAB_TITLES={overview:'Обзор',income:'Доходы',expenses:'Расходы',planned:'Плановые расходы',animals:'Животные',reminders:'Напоминания',grocery:'Список продуктов',receipts:'Чеки',savings:'Копилки'};
-const TAB_ADD_TYPE={overview:'expense',income:'income',expenses:'expense',planned:'planned',animals:'animal',reminders:'reminder',grocery:'grocery',receipts:'receipt',savings:'saving'};
+const TAB_TITLES={overview:'Обзор',income:'Доходы',expenses:'Расходы',planned:'Плановые расходы',animals:'Животные',reminders:'Напоминания',grocery:'Список продуктов',receipts:'Чеки',savings:'Копилки',purchases:'Покупки'};
+const TAB_ADD_TYPE={overview:'expense',income:'income',expenses:'expense',planned:'planned',animals:'animal',reminders:'reminder',grocery:'grocery',receipts:'receipt',savings:'saving',purchases:'purchase'};
 
 function showTab(name,btn){
   document.querySelectorAll('.tab-page').forEach(t=>t.classList.remove('active'));
@@ -606,7 +615,7 @@ function fmt(n){return(n||0).toLocaleString('ru-RU',{minimumFractionDigits:0,max
 function fmtDate(d){if(!d)return'';const[y,m,dd]=d.split('-');return`${dd}.${m}.${y}`;}
 
 function renderTab(name){
-  const fn={overview:renderOverview,income:renderIncome,expenses:renderExpenses,planned:renderPlanned,animals:renderAnimals,reminders:renderReminders,grocery:renderGrocery,receipts:renderReceipts,savings:renderSavings};
+  const fn={overview:renderOverview,income:renderIncome,expenses:renderExpenses,planned:renderPlanned,animals:renderAnimals,reminders:renderReminders,grocery:renderGrocery,receipts:renderReceipts,savings:renderSavings,purchases:renderPurchases};
   if(fn[name])fn[name]();
 }
 
@@ -634,6 +643,9 @@ function togglePaid(id){
 }
 
 // ── MONTHLY SAVINGS AUTO-CONTRIB ──
+function intervalMonths(p){return p.intervalUnit==='weeks'?(p.intervalValue*7)/30:p.intervalValue;}
+function monthlyEquivalent(p){const im=intervalMonths(p);return im>0?p.amount/im:0;}
+
 function applyMonthlyContributions(){
   const key=`contrib_${curYear}_${String(curMonth+1).padStart(2,'0')}`;
   if(S[key])return;
@@ -642,6 +654,9 @@ function applyMonthlyContributions(){
     const linked=(S.plannedExpenses||[]).some(p=>p.savingId===sv.id);
     if(linked)return;
     sv.current=Math.min(sv.goal,sv.current+(sv.monthlyAmount||0));
+  });
+  (S.recurringPurchases||[]).forEach(p=>{
+    p.current=(p.current||0)+monthlyEquivalent(p);
   });
   S[key]=true;save();
 }
