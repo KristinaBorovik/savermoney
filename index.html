@@ -628,7 +628,7 @@ const FF_PERIOD_LABELS={week:'Неделя',biweek:'2 недели',month:'Ме�
 function defaultState(){
   return{
     incomes:[],expenses:[],animalExpenses:[],reminders:[],grocery:[],receipts:[],savings:[],
-    plannedExpenses:[],plannedPaid:{},
+    plannedExpenses:[],plannedPaid:{},plannedDeleted:{},
     petFunds:[],
     foodFund:{periods:[],activePeriodId:null},
     balances:{card:0,cash:0,crypto:0},
@@ -670,6 +670,7 @@ function initFirebase(){
       if(!S.petFunds)S.petFunds=[];
       if(!S.foodFund)S.foodFund={periods:[],activePeriodId:null};
       if(!S.foodFund.periods)S.foodFund.periods=[];
+      if(!S.plannedDeleted)S.plannedDeleted={};
       renderTab(currentTab);
       setSyncStatus('ok');
     }
@@ -722,9 +723,45 @@ function renderTab(name){
 let charts={};
 function destroyChart(k){if(charts[k]){charts[k].destroy();delete charts[k];}}
 
+// ── INCOME PERIOD / DISTRIBUTION HELPERS ──
+// An income can be "once" (only counts in the exact month of its date),
+// "weekly" (covers 7 days from its date) or "monthly" (covers ~30 days from its date).
+// When its coverage period overlaps a viewed month, it is prorated by the number
+// of overlapping days so a salary received near month-end also shows up (partially)
+// in the following month, instead of just vanishing from the view.
+function incomeCoverage(inc){
+  const start=inc.date;
+  if(inc.periodType==='weekly')return{start,end:addDays(start,6)};
+  if(inc.periodType==='monthly')return{start,end:addDays(start,29)};
+  return{start,end:start};
+}
+function monthRange(year,month){
+  const start=`${year}-${String(month+1).padStart(2,'0')}-01`;
+  const lastDay=new Date(year,month+1,0).getDate();
+  const end=`${year}-${String(month+1).padStart(2,'0')}-${String(lastDay).padStart(2,'0')}`;
+  return{start,end};
+}
+function overlapDays(aStart,aEnd,bStart,bEnd){
+  const s=aStart>bStart?aStart:bStart;
+  const e=aEnd<bEnd?aEnd:bEnd;
+  if(s>e)return 0;
+  return daysBetween(s,e)+1;
+}
+function incomeMonthPortion(inc,year,month){
+  const{start,end}=incomeCoverage(inc);
+  const totalDays=Math.max(1,daysBetween(start,end)+1);
+  const{start:mStart,end:mEnd}=monthRange(year,month);
+  const overlap=overlapDays(start,end,mStart,mEnd);
+  if(overlap<=0)return 0;
+  return(inc.amount||0)*(overlap/totalDays);
+}
+function incomeOverlapsMonth(inc,year,month){return incomeMonthPortion(inc,year,month)>0;}
+
 // ── PLANNED HELPERS ──
 function planKey(id){return`${id}_${curYear}_${String(curMonth+1).padStart(2,'0')}`;}
 function isPaid(id){return!!((S.plannedPaid||{})[planKey(id)]);}
+function isDeletedThisMonth(id){return!!((S.plannedDeleted||{})[planKey(id)]);}
+function activePlansForMonth(){return(S.plannedExpenses||[]).filter(p=>!isDeletedThisMonth(p.id));}
 function togglePaid(id){
   if(!S.plannedPaid)S.plannedPaid={};
   const k=planKey(id);
@@ -740,6 +777,28 @@ function togglePaid(id){
   }
   save();renderTab(currentTab);
   if(currentTab!=='overview')renderOverviewStrip();
+}
+
+/** Hide a planned expense only for the currently viewed month, without touching other months */
+function hidePlanThisMonth(id){
+  if(!S.plannedDeleted)S.plannedDeleted={};
+  S.plannedDeleted[planKey(id)]=true;
+  save();renderTab(currentTab);toast('Скрыто только в этом месяце');
+}
+/** Bring back a plan that was hidden for this month */
+function restorePlanThisMonth(id){
+  if(S.plannedDeleted)delete S.plannedDeleted[planKey(id)];
+  save();renderTab(currentTab);toast('Возвращено в этот месяц');
+}
+/** Permanently delete a planned expense template (affects all months) */
+function deletePlanForever(id){
+  const plan=(S.plannedExpenses||[]).find(p=>p.id===id);
+  if(plan&&plan.isPetFund){toast('Управляйте этой статьёй через раздел «Животные»');return;}
+  if(!confirm('Удалить этот план навсегда — из всех месяцев? Для скрытия только в этом месяце используйте другую кнопку.'))return;
+  S.plannedExpenses=(S.plannedExpenses||[]).filter(p=>p.id!==id);
+  if(S.plannedPaid){Object.keys(S.plannedPaid).forEach(k=>{if(k.startsWith(id+'_'))delete S.plannedPaid[k];});}
+  if(S.plannedDeleted){Object.keys(S.plannedDeleted).forEach(k=>{if(k.startsWith(id+'_'))delete S.plannedDeleted[k];});}
+  save();renderTab(currentTab);toast('Удалено навсегда');
 }
 
 function applyMonthlyContributions(){
@@ -801,6 +860,9 @@ function pfRemovePlan(pf){
     S.plannedExpenses=(S.plannedExpenses||[]).filter(p=>p.id!==pf.linkedPlanId);
     if(S.plannedPaid){
       Object.keys(S.plannedPaid).forEach(k=>{if(k.startsWith(pf.linkedPlanId+'_'))delete S.plannedPaid[k];});
+    }
+    if(S.plannedDeleted){
+      Object.keys(S.plannedDeleted).forEach(k=>{if(k.startsWith(pf.linkedPlanId+'_'))delete S.plannedDeleted[k];});
     }
   }
 }
@@ -883,6 +945,8 @@ function renderPetFund(){
     const monthsToFull=cost>0&&pf.monthlyAmount>0?Math.max(0,Math.ceil((cost-saved)/pf.monthlyAmount)):null;
     const planLinked=pf.linkedPlanId&&(S.plannedExpenses||[]).find(p=>p.id===pf.linkedPlanId);
     const planBadge=pf.monthlyAmount>0?`<div class="pf-plan-badge"><i class="fa-solid fa-calendar-check"></i>${planLinked?(isPaid(pf.linkedPlanId)?'В планах: оплачено':'В планах: не оплачено'):'В плановых расходах'}</div>`:'';
+    const purchases=(pf.purchaseHistory||[]).filter(h=>!h.skipped);
+    const skips=(pf.purchaseHistory||[]).filter(h=>h.skipped);
 
     return`<div class="pf-card">
       <div class="pf-card-accent" style="background:${col}"></div>
@@ -899,13 +963,15 @@ function renderPetFund(){
       <div class="pf-meta">
         ${next?`<span class="pf-meta-item"><i class="fa-solid fa-calendar"></i>Куп. ${fmtDate(next)}</span>`:'<span class="pf-meta-item"><i class="fa-solid fa-calendar-plus"></i>Ещё не покупали</span>'}
         ${monthsToFull!==null&&monthsToFull>0?`<span class="pf-meta-item"><i class="fa-solid fa-hourglass-half"></i>≈${monthsToFull} мес до полного</span>`:''}
-        ${pf.purchaseHistory&&pf.purchaseHistory.length?`<span class="pf-meta-item"><i class="fa-solid fa-bag-shopping"></i>${pf.purchaseHistory.length} покупок</span>`:''}
+        ${purchases.length?`<span class="pf-meta-item"><i class="fa-solid fa-bag-shopping"></i>${purchases.length} покупок</span>`:''}
+        ${skips.length?`<span class="pf-meta-item"><i class="fa-solid fa-forward"></i>${skips.length} пропусков</span>`:''}
       </div>
       <div class="pf-actions">
         <button class="pf-buy-btn ${canBuy?'ready':'not-ready'}" onclick="${canBuy?`pfBought(${pf.id})`:''}">
           <i class="fa-solid ${canBuy?'fa-check':'fa-lock'}"></i>
           ${canBuy?'Купили!':'Ещё копим'}
         </button>
+        <button class="pf-edit-btn" onclick="pfSkip(${pf.id})" title="Не нужно в этот раз"><i class="fa-solid fa-forward"></i></button>
         <button class="pf-edit-btn" onclick="pfEdit(${pf.id})" title="Настройки"><i class="fa-solid fa-pen"></i></button>
         <button class="pf-del-btn" onclick="pfDel(${pf.id})" title="Удалить"><i class="fa-solid fa-trash"></i></button>
       </div>
@@ -925,6 +991,17 @@ function pfBought(id){
   const pf=(S.petFunds||[]).find(p=>p.id===id);
   if(!pf)return;
   openPfBoughtModal(pf);
+}
+
+/** Mark this cycle as "not needed" — resets the cycle timer without spending money,
+ *  but keeps a record for statistics (purchases vs skips). */
+function pfSkip(id){
+  const pf=(S.petFunds||[]).find(p=>p.id===id);
+  if(!pf)return;
+  if(!pf.purchaseHistory)pf.purchaseHistory=[];
+  pf.purchaseHistory.unshift({date:todayStr(),amount:0,comment:'Пропущено — не понадобилось',skipped:true});
+  pf.lastPurchaseDate=todayStr();
+  save();renderAnimals();toast('Отмечено: не понадобилось в этот раз ⏭');
 }
 
 function openPfBoughtModal(pf){
@@ -1199,7 +1276,7 @@ function ffOverviewData(){
 function renderOverviewStrip(){
   const strip=document.getElementById('ov-planned-strip');
   if(!strip)return;
-  const plans=S.plannedExpenses||[];
+  const plans=activePlansForMonth();
   if(!plans.length){strip.style.display='none';return;}
   strip.style.display='';
   const unpaid=plans.filter(p=>!isPaid(p.id));
@@ -1269,20 +1346,20 @@ function renderOverviewFoodStrip(){
 }
 
 function renderOverview(){
-  const inc=S.incomes.filter(i=>inMonth(i.date));
+  const inc=S.incomes.filter(i=>incomeOverlapsMonth(i,curYear,curMonth));
   const exp=S.expenses.filter(e=>inMonth(e.date));
   const aexp=S.animalExpenses.filter(e=>inMonth(e.date));
-  const totalInc=inc.reduce((s,i)=>s+(i.amount||0),0);
+  const totalInc=inc.reduce((s,i)=>s+incomeMonthPortion(i,curYear,curMonth),0);
   const totalExp=exp.reduce((s,e)=>s+(e.amount||0),0);
   const totalAExp=aexp.reduce((s,e)=>s+(e.amount||0),0);
-  const plans=S.plannedExpenses||[];
+  const plans=activePlansForMonth();
   const totalPaidPl=plans.filter(p=>isPaid(p.id)).reduce((s,p)=>s+(p.amount||0),0);
   const totalUnpaidPl=plans.filter(p=>!isPaid(p.id)).reduce((s,p)=>s+(p.amount||0),0);
   const totalPfMonthly=(S.petFunds||[]).reduce((s,pf)=>s+(pf.monthlyAmount||0),0);
   const totalAll=totalExp+totalAExp;
   const balance=totalInc-totalAll-totalUnpaidPl;
-  const diana=inc.filter(i=>i.person==='diana').reduce((s,i)=>s+(i.amount||0),0);
-  const kristina=inc.filter(i=>i.person==='kristina').reduce((s,i)=>s+(i.amount||0),0);
+  const diana=inc.filter(i=>i.person==='diana').reduce((s,i)=>s+incomeMonthPortion(i,curYear,curMonth),0);
+  const kristina=inc.filter(i=>i.person==='kristina').reduce((s,i)=>s+incomeMonthPortion(i,curYear,curMonth),0);
   const fd=ffOverviewData();
 
   document.getElementById('kpi-row').innerHTML=`
@@ -1330,14 +1407,20 @@ function renderOverview(){
 // ── INCOME ──
 function renderIncome(){
   const pf=S.personFilter||'all';
-  const list=S.incomes.filter(i=>inMonth(i.date)&&(pf==='all'||i.person===pf));
-  const total=list.reduce((s,i)=>s+(i.amount||0),0);
-  document.getElementById('income-total-sub').textContent='Итого: '+fmt(total);
+  const list=S.incomes.filter(i=>incomeOverlapsMonth(i,curYear,curMonth)&&(pf==='all'||i.person===pf));
+  const total=list.reduce((s,i)=>s+incomeMonthPortion(i,curYear,curMonth),0);
+  document.getElementById('income-total-sub').textContent='Итого в этом месяце: '+fmt(total)+' (еженедельные/ежемесячные доходы распределяются по дням)';
   document.getElementById('income-list').innerHTML=list.length
-    ?list.map(i=>`<div class="row-item"><div class="row-dot" style="background:${i.person==='diana'?'var(--rose)':'var(--purple)'}"></div><div class="row-body"><div class="row-name">${esc(i.comment||'Доход')}</div><div class="row-meta"><span class="badge badge-${i.person==='diana'?'diana':'kristina'}">${i.person==='diana'?'Диана':'Кристина'}</span>${i.week?`<span class="badge badge-cat">Нед. ${i.week}</span>`:''}<span>${fmtDate(i.date)}</span></div></div><div class="row-right"><div class="row-amount pos">${fmt(i.amount)}</div><div class="row-pay-badge">${PAY_BADGE(i.pay)}</div></div><button class="del-btn" onclick="del('incomes',${i.id})"><i class="fa-solid fa-trash"></i></button></div>`).join('')
+    ?list.map(i=>{
+      const portion=incomeMonthPortion(i,curYear,curMonth);
+      const {start,end}=incomeCoverage(i);
+      const isSplit=start!==end;
+      const periodLabel=i.periodType==='weekly'?'Понедельно':i.periodType==='monthly'?'Ежемесячно':'';
+      return`<div class="row-item"><div class="row-dot" style="background:${i.person==='diana'?'var(--rose)':'var(--purple)'}"></div><div class="row-body"><div class="row-name">${esc(i.comment||'Доход')}</div><div class="row-meta"><span class="badge badge-${i.person==='diana'?'diana':'kristina'}">${i.person==='diana'?'Диана':'Кристина'}</span>${periodLabel?`<span class="badge badge-cat">${periodLabel}</span>`:''}<span>${fmtDate(start)}${isSplit?' — '+fmtDate(end):''}</span></div></div><div class="row-right"><div class="row-amount pos">${fmt(portion)}</div>${isSplit?`<div style="font-size:10px;color:var(--text3);margin-top:2px">из ${fmt(i.amount)} всего</div>`:''}<div class="row-pay-badge">${PAY_BADGE(i.pay)}</div></div><button class="del-btn" onclick="del('incomes',${i.id})"><i class="fa-solid fa-trash"></i></button></div>`;
+    }).join('')
     :emptyState('fa-arrow-trend-up','Нет доходов за этот период');
   document.getElementById('income-weeks').innerHTML=[1,2,3,4].map(w=>{
-    const wt=S.incomes.filter(i=>inMonth(i.date)&&i.week===w&&(pf==='all'||i.person===pf)).reduce((s,i)=>s+(i.amount||0),0);
+    const wt=S.incomes.filter(i=>incomeOverlapsMonth(i,curYear,curMonth)&&weekOfDate(i.date)===w&&(pf==='all'||i.person===pf)).reduce((s,i)=>s+incomeMonthPortion(i,curYear,curMonth),0);
     return`<div class="wk-card"><div class="wk-label">Неделя ${w}</div><div class="wk-val" style="color:var(--green)">${fmt(wt)}</div></div>`;
   }).join('');
 }
@@ -1357,13 +1440,14 @@ function setCat(c){S.catFilter=c;renderExpenses();}
 
 // ── PLANNED ──
 function renderPlanned(){
-  const plans=S.plannedExpenses||[];
+  const plans=activePlansForMonth();
+  const hidden=(S.plannedExpenses||[]).filter(p=>isDeletedThisMonth(p.id));
   const paid=plans.filter(p=>isPaid(p.id));
   const unpaid=plans.filter(p=>!isPaid(p.id));
   const totalPaid=paid.reduce((s,p)=>s+(p.amount||0),0);
   const totalUnpaid=unpaid.reduce((s,p)=>s+(p.amount||0),0);
   const totalAll=plans.reduce((s,p)=>s+(p.amount||0),0);
-  document.getElementById('planned-sub').textContent=`${MONTHS[curMonth]} — ${paid.length}/${plans.length} оплачено`;
+  document.getElementById('planned-sub').textContent=`${MONTHS[curMonth]} — ${paid.length}/${plans.length} оплачено${hidden.length?` · ${hidden.length} скрыто в этом месяце`:''}`;
   document.getElementById('planned-summary-bar').innerHTML=`
     <div style="background:var(--green-bg);border:1px solid #b8e0c8;border-radius:var(--r-md);padding:10px 16px;flex:1;min-width:120px">
       <div style="font-size:10px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">Оплачено</div>
@@ -1380,8 +1464,8 @@ function renderPlanned(){
       <div style="font-size:20px;font-weight:700;color:var(--text)">${fmt(totalAll)}</div>
       <div style="font-size:11px;color:var(--text3);margin-top:2px">${plans.length} платежей</div>
     </div>`;
-  if(!plans.length){document.getElementById('planned-grid').innerHTML=`<div style="grid-column:1/-1">${emptyState('fa-calendar-check','Нет плановых расходов — добавьте аренду, коммуналку, страховку...')}</div>`;return;}
-  document.getElementById('planned-grid').innerHTML=plans.map(p=>{
+  if(!plans.length&&!hidden.length){document.getElementById('planned-grid').innerHTML=`<div style="grid-column:1/-1">${emptyState('fa-calendar-check','Нет плановых расходов — добавьте аренду, коммуналку, страховку...')}</div>`;return;}
+  const activeCards=plans.map(p=>{
     const pd=isPaid(p.id);
     const isPf=p.isPetFund;
     const isLinkSv=p.savingId;
@@ -1396,10 +1480,23 @@ function renderPlanned(){
       ${p.comment?`<div style="font-size:11px;color:var(--text3);margin-top:4px">${esc(p.comment)}</div>`:''}
       <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
         <button class="plan-status-btn ${pd?'paid':'unpaid'}" onclick="togglePaid(${p.id})">${pd?'✓ Оплачено':'Не оплачено'}</button>
-        ${isPf?`<span style="font-size:10px;color:var(--amber)"><i class="fa-solid fa-lock"></i> авто</span>`:`<button class="del-btn" onclick="del('plannedExpenses',${p.id})"><i class="fa-solid fa-trash"></i></button>`}
+        <div style="display:flex;gap:4px">
+          <button class="del-btn" onclick="hidePlanThisMonth(${p.id})" title="Скрыть только в этом месяце"><i class="fa-solid fa-calendar-minus"></i></button>
+          ${isPf?'':`<button class="del-btn" onclick="deletePlanForever(${p.id})" title="Удалить навсегда, из всех месяцев"><i class="fa-solid fa-trash"></i></button>`}
+        </div>
       </div>
     </div>`;
   }).join('');
+  const hiddenCards=hidden.map(p=>`<div class="plan-card" style="opacity:.55">
+      <div class="plan-card-top">
+        <div><div class="plan-card-name">${esc(p.name)} <span class="monthly-badge" style="background:var(--surface3);color:var(--text3)">скрыто</span></div><div class="plan-card-meta">Не учитывается в этом месяце</div></div>
+      </div>
+      <div class="plan-card-amount" style="color:var(--text3)">${fmt(p.amount)}</div>
+      <div style="display:flex;justify-content:flex-end;margin-top:12px">
+        <button class="btn btn-ghost btn-sm" onclick="restorePlanThisMonth(${p.id})"><i class="fa-solid fa-rotate-left"></i> Вернуть в этот месяц</button>
+      </div>
+    </div>`).join('');
+  document.getElementById('planned-grid').innerHTML=activeCards+hiddenCards;
 }
 
 // ── ANIMALS ──
@@ -1493,6 +1590,7 @@ function del(list,id){
     if(linkedPlan){
       S.plannedExpenses=S.plannedExpenses.filter(p=>p.id!==linkedPlan.id);
       if(S.plannedPaid){Object.keys(S.plannedPaid).forEach(k=>{if(k.startsWith(linkedPlan.id+'_'))delete S.plannedPaid[k];});}
+      if(S.plannedDeleted){Object.keys(S.plannedDeleted).forEach(k=>{if(k.startsWith(linkedPlan.id+'_'))delete S.plannedDeleted[k];});}
     }
   }
   S[list]=(S[list]||[]).filter(item=>item.id!==id);
@@ -1505,7 +1603,7 @@ const CAT_OPTS=CATS.map(c=>`<option value="${c.id}">${c.name}</option>`).join(''
 const EMOJI_OPTS=PF_EMOJIS.map(e=>`<option value="${e}">${e}</option>`).join('');
 
 const FORMS={
-  income:()=>`<div class="fg2"><div class="field"><label>Кто получает</label><select id="m-person"><option value="diana">Диана</option><option value="kristina">Кристина</option></select></div><div class="field"><label>Сумма (€)</label><input type="number" id="m-amount" placeholder="0" min="0" step="0.01" autofocus></div></div><div class="fg2"><div class="field"><label>Тип</label><select id="m-type"><option value="salary">Зарплата</option><option value="weekly">Еженедельный</option><option value="freelance">Фриланс</option><option value="other">Другое</option></select></div><div class="field"><label>Неделя</label><select id="m-week"><option value="">—</option><option value="1">Нед. 1 (1–7)</option><option value="2">Нед. 2 (8–14)</option><option value="3">Нед. 3 (15–21)</option><option value="4">Нед. 4 (22–31)</option></select></div></div><div class="fg2"><div class="field"><label>Способ</label><select id="m-pay">${PAY_OPTS}</select></div><div class="field"><label>Дата</label><input type="date" id="m-date" value="${todayStr()}"></div></div><div class="fg1"><div class="field"><label>Комментарий</label><input type="text" id="m-comment" placeholder="Зарплата, проект..."></div></div>`,
+  income:()=>`<div class="fg2"><div class="field"><label>Кто получает</label><select id="m-person"><option value="diana">Диана</option><option value="kristina">Кристина</option></select></div><div class="field"><label>Сумма (€)</label><input type="number" id="m-amount" placeholder="0" min="0" step="0.01" autofocus></div></div><div class="fg2"><div class="field"><label>Тип</label><select id="m-type"><option value="salary">Зарплата</option><option value="weekly">Еженедельный</option><option value="freelance">Фриланс</option><option value="other">Другое</option></select></div><div class="field"><label>Срок действия</label><select id="m-periodtype"><option value="once">Разовый (только в этот месяц)</option><option value="weekly">Понедельный (7 дней)</option><option value="monthly">Ежемесячный (~30 дней)</option></select></div></div><div class="fg2"><div class="field"><label>Способ</label><select id="m-pay">${PAY_OPTS}</select></div><div class="field"><label>Дата получения</label><input type="date" id="m-date" value="${todayStr()}"></div></div><div class="fg1"><div class="field"><label>Комментарий</label><input type="text" id="m-comment" placeholder="Зарплата, проект..."></div></div><div style="font-size:11px;color:var(--text3);line-height:1.5">Если доход еженедельный или ежемесячный — сумма автоматически распределится по дням и будет частично учтена в следующем месяце, если период выходит за его границы.</div>`,
   expense:()=>`<div class="fg2"><div class="field"><label>Название</label><input type="text" id="m-name" placeholder="Что оплачено?" autofocus></div><div class="field"><label>Сумма (€)</label><input type="number" id="m-amount" placeholder="0" min="0" step="0.01"></div></div><div class="fg2"><div class="field"><label>Категория</label><select id="m-cat">${CAT_OPTS}</select></div><div class="field"><label>Кто платит</label><select id="m-person"><option value="both">Обе</option><option value="diana">Диана</option><option value="kristina">Кристина</option></select></div></div><div class="fg2"><div class="field"><label>Способ</label><select id="m-pay">${PAY_OPTS}</select></div><div class="field"><label>Дата</label><input type="date" id="m-date" value="${todayStr()}"></div></div><div class="fg1"><div class="field"><label>Комментарий</label><input type="text" id="m-comment" placeholder="Детали..."></div></div>`,
   planned:()=>`<div class="fg2"><div class="field"><label>Название</label><input type="text" id="m-name" placeholder="Аренда, коммуналка..." autofocus></div><div class="field"><label>Сумма (€)</label><input type="number" id="m-amount" placeholder="0" min="0" step="0.01"></div></div><div class="fg2"><div class="field"><label>День оплаты</label><input type="number" id="m-day" min="1" max="31" placeholder="1–31"></div><div class="field"><label>Способ</label><select id="m-pay">${PAY_OPTS}</select></div></div><div class="fg1"><div class="field"><label>Комментарий</label><input type="text" id="m-comment" placeholder="Подробности..."></div></div>`,
   animal:()=>`<div class="fg2"><div class="field"><label>Что именно</label><select id="m-cat"><option>Корм</option><option>Ветеринар</option><option>Лекарства</option><option>Игрушки</option><option>Гигиена</option><option>Другое</option></select></div><div class="field"><label>Сумма (€)</label><input type="number" id="m-amount" placeholder="0" min="0" step="0.01" autofocus></div></div><div class="fg2"><div class="field"><label>Способ</label><select id="m-pay">${PAY_OPTS}</select></div><div class="field"><label>Дата</label><input type="date" id="m-date" value="${todayStr()}"></div></div><div class="fg1"><div class="field"><label>Комментарий</label><input type="text" id="m-comment" placeholder="Корм для котов..."></div></div>`,
@@ -1721,7 +1819,7 @@ function confirmModal(){
   }
 
   // ── STANDARD MODALS ──
-  if(activeModal==='income'){if(!gv('m-amount')||+gv('m-amount')<=0){shake();return;}S.incomes.push({id,person:gv('m-person'),amount:+gv('m-amount'),type:gv('m-type'),week:gv('m-week')?+gv('m-week'):null,comment:gv('m-comment'),pay:gv('m-pay'),date:gv('m-date')});}
+  if(activeModal==='income'){if(!gv('m-amount')||+gv('m-amount')<=0){shake();return;}S.incomes.push({id,person:gv('m-person'),amount:+gv('m-amount'),type:gv('m-type'),periodType:gv('m-periodtype')||'once',comment:gv('m-comment'),pay:gv('m-pay'),date:gv('m-date')});}
   else if(activeModal==='expense'){if(!gv('m-name')||!gv('m-amount')||+gv('m-amount')<=0){shake();return;}S.expenses.push({id,name:gv('m-name'),cat:gv('m-cat'),amount:+gv('m-amount'),comment:gv('m-comment'),pay:gv('m-pay'),person:gv('m-person'),date:gv('m-date')});}
   else if(activeModal==='planned'){if(!gv('m-name')||!gv('m-amount')||+gv('m-amount')<=0){shake();return;}S.plannedExpenses=S.plannedExpenses||[];S.plannedExpenses.push({id,name:gv('m-name'),amount:+gv('m-amount'),dueDay:gv('m-day')?+gv('m-day'):null,pay:gv('m-pay'),comment:gv('m-comment'),color:PLAN_COLORS[(S.plannedExpenses.length)%PLAN_COLORS.length]});}
   else if(activeModal==='animal'){if(!gv('m-amount')||+gv('m-amount')<=0){shake();return;}S.animalExpenses.push({id,cat:gv('m-cat'),amount:+gv('m-amount'),comment:gv('m-comment'),pay:gv('m-pay'),date:gv('m-date')});}
@@ -1766,7 +1864,7 @@ function confirmModal(){
 function shake(){const box=document.querySelector('.modal-box');box.style.animation='none';setTimeout(()=>{box.style.animation='shake .3s ease';},10);}
 
 function exportData(){const blob=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`budget-backup-${todayStr()}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),5000);toast('Файл скачан');}
-function importData(e){const file=e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=ev=>{try{const data=JSON.parse(ev.target.result);if(data&&typeof data==='object'){Object.assign(S,data);if(!S.petFunds)S.petFunds=[];if(!S.foodFund)S.foodFund={periods:[],activePeriodId:null};save();renderTab(currentTab);toast('Данные загружены!');}}catch(err){alert('Ошибка чтения файла.');}};reader.readAsText(file);e.target.value='';}
+function importData(e){const file=e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=ev=>{try{const data=JSON.parse(ev.target.result);if(data&&typeof data==='object'){Object.assign(S,data);if(!S.petFunds)S.petFunds=[];if(!S.foodFund)S.foodFund={periods:[],activePeriodId:null};if(!S.plannedDeleted)S.plannedDeleted={};save();renderTab(currentTab);toast('Данные загружены!');}}catch(err){alert('Ошибка чтения файла.');}};reader.readAsText(file);e.target.value='';}
 
 let toastTimer=null;
 function toast(msg){const el=document.getElementById('toast');document.getElementById('toast-msg').textContent=msg;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),2400);}
